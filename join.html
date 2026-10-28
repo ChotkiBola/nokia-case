@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#005aff">
+<title>Nokia case study: qo‘shilish</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+  :root { --bg:#f3f6fb; --fg:#071a3d; --muted:#56657f; --card:#fff; --line:#dbe3ef; --blue:#005aff; --ok:#00a37a; --red:#e5484d; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.5 Manrope, system-ui, sans-serif; display:flex; flex-direction:column; }
+  header { padding:16px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .brand { font:800 17px "Inter Tight", sans-serif; letter-spacing:-.02em; display:flex; align-items:center; gap:8px; }
+  .brand i { width:10px; height:10px; border-radius:3px; background:var(--blue); }
+  .status { font-size:13px; font-weight:700; color:var(--ok); display:flex; align-items:center; gap:6px; }
+  .status::before { content:""; width:8px; height:8px; border-radius:50%; background:currentColor; }
+  .status.off { color:var(--red); }
+  main { flex:1; padding:6px 18px 18px; display:flex; flex-direction:column; }
+  .panel { background:var(--card); border-radius:26px; padding:24px 20px; box-shadow:0 20px 40px -24px rgba(7,26,61,.3), inset 0 0 0 1px var(--line); animation:in .45s cubic-bezier(.2,.8,.2,1); }
+  @keyframes in { from { opacity:0; transform:translateY(14px) scale(.98); } to { opacity:1; transform:none; } }
+  .tag { display:inline-block; font-size:13px; font-weight:800; color:#fff; background:var(--blue); border-radius:999px; padding:4px 12px; margin-bottom:12px; }
+  h1 { font:800 27px/1.12 "Inter Tight", sans-serif; letter-spacing:-.03em; margin:0 0 8px; }
+  p.sub { color:var(--muted); margin:0; }
+  .row { display:flex; gap:10px; margin-top:18px; }
+  input[type=text] { flex:1; min-width:0; font:600 19px Manrope, sans-serif; padding:15px 16px; border-radius:16px; border:0; background:var(--bg); color:var(--fg); box-shadow:inset 0 0 0 1.5px var(--line); }
+  input[type=text]:focus { outline:none; box-shadow:inset 0 0 0 2.5px var(--blue); }
+  .send { border:0; border-radius:16px; padding:0 20px; background:var(--blue); color:#fff; font:800 16px "Inter Tight", sans-serif; cursor:pointer; }
+  .send:disabled { opacity:.45; }
+  .note { margin-top:12px; font-size:14px; color:var(--muted); min-height:1.4em; }
+  .note.ok { color:var(--ok); font-weight:700; } .note.err { color:var(--red); font-weight:700; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .chips span { background:#e8efff; color:var(--blue); border-radius:999px; padding:5px 12px; font-weight:700; font-size:14px; }
+  .opt { display:block; width:100%; text-align:left; margin-top:12px; padding:17px 18px; border-radius:18px; border:0; cursor:pointer; background:var(--bg); color:var(--fg); font:700 18px "Inter Tight", sans-serif; box-shadow:inset 0 0 0 1.5px var(--line); transition:transform .15s; }
+  .opt:active { transform:scale(.98); }
+  .opt[disabled] { cursor:default; opacity:.5; }
+  .opt.mine { opacity:1; box-shadow:inset 0 0 0 2.5px var(--ok); background:#eafaf4; }
+  .big-emoji { font-size:64px; line-height:1; margin-bottom:12px; }
+  .react { position:sticky; bottom:0; padding:14px 14px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(to top, var(--bg) 70%, rgba(243,246,251,0)); }
+  .react p { text-align:center; margin:0 0 10px; font-size:13px; color:var(--muted); font-weight:600; }
+  .emos { display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; }
+  .emo { aspect-ratio:1; border:0; border-radius:18px; background:var(--card); font-size:30px; cursor:pointer; box-shadow:0 10px 20px -14px rgba(7,26,61,.5), inset 0 0 0 1px var(--line); touch-action:manipulation; transition:transform .12s; user-select:none; }
+  .emo:active, .emo.hit { transform:scale(.86); }
+  .burst { position:fixed; pointer-events:none; font-size:30px; animation:up .9s ease-out forwards; z-index:9; }
+  @keyframes up { to { transform:translateY(-140px) scale(1.4); opacity:0; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><i></i>Nokia case study</div>
+  <div class="status" id="status">Ulandi</div>
+</header>
+<main id="main"></main>
+<div class="react">
+  <p>Reaksiya bildiring, u katta ekranda uchib chiqadi</p>
+  <div class="emos" id="emos"></div>
+</div>
+<script>
+(() => {
+  const EMO = ["👏", "🔥", "😮", "😂", "❤️", "🤯"];
+  const CLOUDS = { w1: "Nokia deganda nima esingizga keladi?", w2: "Bir so‘z bilan: Nokia’dan asosiy saboq nima?" };
+  const POLLS = {
+    q1: { q: "2011-yilda Nokia qaysi yo‘lni tanlashi kerak edi?", opts: { android: "Android ga o‘tish", wp: "Windows Phone", own: "O‘z tizimi (MeeGo)" } },
+    q2: { q: "Inqirozning asosiy sababi nima?", opts: { tech: "Texnologik kechikish", mgmt: "Boshqaruv va madaniyat", comp: "Kuchli raqobatchilar" } },
+  };
+  const MAX_WORDS = 3;
+  const S = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  let id = S.get("nokia-device");
+  if (!id) { id = Math.random().toString(36).slice(2, 12); S.set("nokia-device", id); }
+  const main = document.getElementById("main"), status = document.getElementById("status");
+  let state = null;
+
+  const post = body => fetch("/api/act", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || "Server xatosi"); return j; });
+
+  /* ---------- reactions (taps are batched every 400 ms) ---------- */
+  const emos = document.getElementById("emos");
+  const pending = {};
+  EMO.forEach((e, i) => {
+    const b = document.createElement("button");
+    b.className = "emo"; b.type = "button"; b.textContent = e; b.setAttribute("aria-label", "Reaksiya " + e);
+    b.addEventListener("click", ev => {
+      pending[i] = Math.min(10, (pending[i] || 0) + 1);
+      if (navigator.vibrate) navigator.vibrate(8);
+      const f = document.createElement("span");
+      f.className = "burst"; f.textContent = e;
+      const r = b.getBoundingClientRect();
+      f.style.left = r.left + r.width / 2 - 15 + "px"; f.style.top = r.top - 10 + "px";
+      document.body.appendChild(f); setTimeout(() => f.remove(), 900);
+    });
+    emos.appendChild(b);
+  });
+  setInterval(() => {
+    Object.keys(pending).forEach(i => { const n = pending[i]; delete pending[i]; post({ t: "r", i: Number(i), n }).catch(() => {}); });
+  }, 400);
+
+  /* ---------- views ---------- */
+  function view(s) {
+    if (s === state) return;
+    state = s;
+    const [kind, key] = s.split(":");
+    if (kind === "cloud" && CLOUDS[key]) return cloudView(key);
+    if (kind === "poll" && POLLS[key]) return pollView(key);
+    if (kind === "end") return simple("🙏", "Rahmat!", "Taqdimot tugadi. Savollaringiz bo‘lsa, hozir berishingiz mumkin. Reaksiyalar hali ham ishlaydi.");
+    if (kind === "react") return simple("👀", "Taqdimotni kuzating", "Hozircha savol yo‘q. Yoqqan joyda pastdagi reaksiyalarni bosing.");
+    simple("👋", "Xush kelibsiz!", "Siz taqdimotga ulandingiz. Savol yoki so‘z buluti boshlanganda shu sahifa o‘zi yangilanadi.");
+  }
+  function simple(icon, title, text) {
+    main.innerHTML = `<div class="panel"><div class="big-emoji">${icon}</div><h1>${title}</h1><p class="sub">${text}</p></div>`;
+  }
+  function cloudView(key) {
+    const sentKey = "nokia-words-" + key;
+    const sent = JSON.parse(S.get(sentKey) || "[]");
+    main.innerHTML = `<div class="panel"><span class="tag">So‘z buluti</span><h1>${CLOUDS[key]}</h1><p class="sub">Bitta yoki ikki so‘z yozing. Ko‘p yozilgan so‘z ekranda kattaroq ko‘rinadi.</p>
+      <form class="row" id="wf"><input type="text" id="wi" maxlength="24" autocomplete="off" enterkeyhint="send" placeholder="Masalan: 3310" aria-label="So‘z"><button class="send" id="ws">Yuborish</button></form>
+      <div class="note" id="wn"></div><div class="chips" id="wc"></div></div>`;
+    const f = document.getElementById("wf"), inp = document.getElementById("wi"), btn = document.getElementById("ws"), note = document.getElementById("wn"), chips = document.getElementById("wc");
+    function refresh() {
+      chips.innerHTML = sent.map(w => `<span>${w.replace(/[<>&]/g, "")}</span>`).join("");
+      const left = MAX_WORDS - sent.length;
+      if (left <= 0) { inp.disabled = btn.disabled = true; note.className = "note ok"; note.textContent = "Rahmat! So‘zlaringiz ekranda."; }
+      else if (sent.length) { note.className = "note"; note.textContent = `Yana ${left} ta so‘z yuborishingiz mumkin.`; }
+    }
+    refresh();
+    f.addEventListener("submit", async e => {
+      e.preventDefault();
+      const w = inp.value.trim();
+      if (!w) return;
+      btn.disabled = true;
+      try {
+        await post({ t: "w", k: key, w });
+        sent.push(w); S.set(sentKey, JSON.stringify(sent)); inp.value = "";
+        if (navigator.vibrate) navigator.vibrate([10, 40, 10]);
+        refresh();
+      } catch (err) { note.className = "note err"; note.textContent = err.message; }
+      finally { if (sent.length < MAX_WORDS) btn.disabled = false; inp.focus(); }
+    });
+  }
+  function pollView(key) {
+    const p = POLLS[key], mineKey = "nokia-vote-" + key, mine = S.get(mineKey);
+    main.innerHTML = `<div class="panel"><span class="tag">Ovoz berish</span><h1>${p.q}</h1>` +
+      Object.entries(p.opts).map(([k, l]) => `<button class="opt" type="button" data-k="${k}">${l}</button>`).join("") +
+      `<div class="note" id="pn"></div></div>`;
+    const btns = [...main.querySelectorAll(".opt")], note = document.getElementById("pn");
+    const lock = m => { btns.forEach(b => { b.disabled = true; b.classList.toggle("mine", b.dataset.k === m); }); note.className = "note ok"; note.textContent = "Ovozingiz qabul qilindi. Natijani katta ekranda ko‘ring."; };
+    if (mine) lock(mine);
+    btns.forEach(b => b.addEventListener("click", async () => {
+      btns.forEach(x => (x.disabled = true));
+      try { await post({ t: "v", k: key, o: b.dataset.k }); S.set(mineKey, b.dataset.k); lock(b.dataset.k); if (navigator.vibrate) navigator.vibrate(15); }
+      catch (err) { btns.forEach(x => (x.disabled = false)); note.className = "note err"; note.textContent = err.message; }
+    }));
+  }
+
+  /* ---------- follow the presenter ---------- */
+  async function sync() {
+    try {
+      const r = await fetch("/api/live?id=" + id, { cache: "no-store" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+      status.className = "status"; status.textContent = "Ulandi";
+      view(j.state || "welcome");
+    } catch (e) {
+      status.className = "status off"; status.textContent = "Aloqa yo‘q";
+      if (state === null) view("welcome");
+    }
+  }
+  sync(); setInterval(sync, 2000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) sync(); });
+})();
+</script>
+</body>
+</html>
