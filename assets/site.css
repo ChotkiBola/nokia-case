@@ -300,6 +300,7 @@ body.present { overflow: hidden; }
 body.present footer { display: none; }
 body.present section.slide { position: fixed; inset: 0; min-height: 0; height: 100vh; visibility: hidden; overflow: hidden; }
 body.present section.slide.current { visibility: visible; }
+body.present section.slide:not(.current) { display: none; }
 body.present section.timeline .stage { position: absolute; inset: 0; }
 body.present .stage { transform-origin: center center; padding-top: 96px; padding-bottom: 80px; }
 .present-ui { position: fixed; bottom: 18px; right: 22px; z-index: 46; display: none; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
