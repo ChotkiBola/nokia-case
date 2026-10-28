@@ -1,6 +1,6 @@
 # Nokia case study: interaktiv taqdimot
 
-TDIU, MBA-15. «Tadbirkorlik va innovatsiyalar» fanidan case study.
+TDIU, MBA-15. «Xalqaro tadbirkorlik» fanidan case study.
 
 ## Nimalar bor
 
