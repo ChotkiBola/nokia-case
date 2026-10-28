@@ -208,6 +208,44 @@
     const s = Math.min(1, (innerHeight - 20) / st.scrollHeight, innerWidth / st.scrollWidth);
     st.style.transform = s < 1 ? `scale(${s})` : "none";
   }
+  /* timeline in presentation mode: arrows, wheel, drag and swipe move the cards */
+  const TLnav = (() => {
+    let x = 0;
+    const max = () => Math.max(0, track.scrollWidth - innerWidth + 40);
+    const step = () => Math.max(300, innerWidth * .55);
+    const bar = $("#tlBar i");
+    function to(v, dur = .8) {
+      x = Math.max(0, Math.min(max(), v));
+      if (G) G.to(track, { x: -x, duration: reduce ? 0 : dur, ease: "power3.out", overwrite: true });
+      else track.style.transform = `translateX(${-x}px)`;
+      if (bar) bar.style.width = (max() ? (x / max()) * 100 : 100) + "%";
+    }
+    return {
+      active: () => presenting && sections[idx] && sections[idx].id === "s-timeline",
+      reset(atEnd) {
+        if (G) G.killTweensOf(track);
+        to(atEnd ? max() : 0, 0);
+        if (G && !reduce) G.fromTo($$(".tcard", track), { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .05, duration: .7, ease: "power3.out", delay: .3 });
+      },
+      next() { if (x >= max() - 4) return false; to(x + step()); return true; },
+      prev() { if (x <= 4) return false; to(x - step()); return true; },
+      by(d, dur) { to(x + d, dur); },
+      get x() { return x; },
+    };
+  })();
+  const tlSec = $("#s-timeline");
+  tlSec.addEventListener("wheel", e => {
+    if (!TLnav.active()) return;
+    e.preventDefault();
+    TLnav.by((Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * 1.4, .5);
+  }, { passive: false });
+  let drag = null;
+  tlSec.addEventListener("pointerdown", e => { if (TLnav.active()) { drag = { sx: e.clientX, x: TLnav.x }; tlSec.setPointerCapture(e.pointerId); tlSec.style.cursor = "grabbing"; } });
+  tlSec.addEventListener("pointermove", e => { if (drag) TLnav.by(drag.x - (e.clientX - drag.sx) * 1.2 - TLnav.x, .3); });
+  const endDrag = () => { drag = null; tlSec.style.cursor = ""; };
+  tlSec.addEventListener("pointerup", endDrag);
+  tlSec.addEventListener("pointercancel", endDrag);
+
   function show(i, dir = 1) {
     const next = Math.max(0, Math.min(sections.length - 1, i));
     const prev = sections[idx], sec = sections[next];
@@ -219,10 +257,7 @@
     sec.classList.add("current");
     fit(sec);
     if (G && !reduce) G.fromTo(sec, { autoAlpha: 0, scale: 1.04, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: .8, ease: "power3.out", delay: prev !== sec ? .15 : 0 });
-    if (sec.id === "s-timeline" && G) {
-      G.killTweensOf(track);
-      G.fromTo(track, { x: innerWidth * .2 }, { x: -(track.scrollWidth - innerWidth + 40), duration: reduce ? 0 : 9, ease: "power1.inOut", delay: .6 });
-    }
+    if (sec.id === "s-timeline") TLnav.reset(dir < 0);
     current && current.classList.remove("on");
     current = null;
     activate(sec, true);
@@ -252,8 +287,8 @@
   }
   $("#presentBtn").addEventListener("click", e => { e.currentTarget.blur(); presenting ? exitPresent() : enterPresent(0); });
   $$("[data-start]").forEach(b => b.addEventListener("click", e => { e.currentTarget.blur(); enterPresent(1); }));
-  $("#prevBtn").addEventListener("click", () => show(idx - 1, -1));
-  $("#nextBtn").addEventListener("click", () => show(idx + 1, 1));
+  $("#prevBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); });
+  $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next())) show(idx + 1, 1); });
   $("#exitBtn").addEventListener("click", exitPresent);
   addEventListener("resize", () => { if (presenting) fit(sections[idx]); });
   document.addEventListener("fullscreenchange", () => { if (presenting) setTimeout(() => fit(sections[idx]), 150); });
@@ -263,8 +298,8 @@
     if (!presenting) { if (e.key === "p" || e.key === "P") enterPresent(0); return; }
     const onControl = e.target.closest && e.target.closest("button, a");
     if (onControl && (e.key === " " || e.key === "Enter")) return;
-    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(idx + 1, 1); }
-    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); show(idx - 1, -1); }
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.next())) show(idx + 1, 1); }
+    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); }
     else if (e.key === "Home") show(0);
     else if (e.key === "End") show(sections.length - 1);
     else if (e.key === "Escape") exitPresent();
@@ -274,6 +309,7 @@
   addEventListener("touchend", e => {
     if (tx === null || !presenting || (window.SnakeRahmat && window.SnakeRahmat.isPlaying())) return;
     const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (TLnav.active()) return; // timeline is moved by dragging
     if (Math.abs(dx) > 60) show(idx + (dx < 0 ? 1 : -1));
   });
 
@@ -439,6 +475,12 @@
       } catch (e) {
         offline = true;
         $$("[data-online]").forEach(el => (el.textContent = "0"));
+        if (/Redis/.test(e.message || "") && !document.querySelector(".db-warn")) {
+          const w = document.createElement("div");
+          w.className = "db-warn";
+          w.textContent = "Ovoz va reaksiyalar bazasi ulanmagan: Vercel → Storage → Upstash Redis’ni ulang va Redeploy qiling";
+          document.body.appendChild(w);
+        }
       } finally { busy = false; }
     }
 

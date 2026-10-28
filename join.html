@@ -161,7 +161,8 @@
       status.className = "status"; status.textContent = "Ulandi";
       view(j.state || "welcome");
     } catch (e) {
-      status.className = "status off"; status.textContent = "Aloqa yo‘q";
+      status.className = "status off";
+      status.textContent = /Redis/.test(e.message || "") ? "Server bazasi ulanmagan" : "Aloqa yo‘q";
       if (state === null) view("welcome");
     }
   }

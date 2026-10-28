@@ -330,3 +330,11 @@ body.present .present-ui { display: flex; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
 }
+
+/* timeline controls (presentation mode only) */
+.tl-help { display: none; align-items: center; gap: 16px; margin-top: 18px; color: var(--muted); font-size: 15px; }
+body.present .tl-help { display: flex; }
+.tl-bar { width: 160px; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; flex: 0 0 auto; }
+.tl-bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .5s ease; }
+body.present #s-timeline { cursor: grab; touch-action: pan-y; user-select: none; }
+.db-warn { position: fixed; left: 50%; top: 70px; transform: translateX(-50%); z-index: 70; background: #ff3b4a; color: #fff; font: 700 14px var(--body); padding: 10px 16px; border-radius: 12px; max-width: 92vw; text-align: center; box-shadow: 0 16px 30px -12px rgba(0,0,0,.4); }
