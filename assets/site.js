@@ -19,7 +19,7 @@
     history.replaceState(null, "", location.pathname + location.hash);
   }
   if (params.has("guest")) store.set("nokia-host", "0");
-  const isHost = store.get("nokia-host") === "1";
+  let isHost = store.get("nokia-host") === "1";
   const hostKey = store.get("nokia-key") || "";
   if (isHost) document.body.classList.add("is-host");
 
@@ -266,6 +266,12 @@
   }
   function enterPresent(start) {
     presenting = true;
+    // the screen that runs the presentation controls the phones (unless opened with ?guest)
+    if (!isHost && store.get("nokia-host") !== "0") {
+      isHost = true;
+      store.set("nokia-host", "1");
+      document.body.classList.add("is-host");
+    }
     triggers.forEach(t => t.disable(true));
     document.body.classList.add("present");
     $("#presentBtn").textContent = "Taqdimotdan chiqish";
@@ -349,8 +355,21 @@
       if (!isHost || s === lastState) return;
       lastState = s;
       fetch("/api/host", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ a: "state", s, key: hostKey }) })
-        .then(r => { if (r.status === 403) { document.querySelector(".host-chip").textContent = "Kalit noto‘g‘ri"; } })
+        .then(r => {
+          if (r.ok) return;
+          lastState = "";
+          if (r.status === 403) {
+            document.querySelector(".host-chip").textContent = "Kalit noto‘g‘ri";
+            warn("Telefonlar slaydga ergashmayapti: Vercel’da HOST_KEY o‘rnatilgan. Saytni /?host=KALIT manzili bilan oching.");
+          }
+        })
         .catch(() => { lastState = ""; });
+    }
+    function warn(text) {
+      if (document.querySelector(".db-warn")) return;
+      const w = document.createElement("div");
+      w.className = "db-warn"; w.textContent = text;
+      document.body.appendChild(w);
     }
 
     function spawn(i) {
