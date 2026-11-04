@@ -675,7 +675,11 @@
     const vid = $("#introVideo");
     let hasVideo = false;
     if (vid) {
-      vid.addEventListener("loadeddata", () => { hasVideo = true; document.body.classList.add("has-intro-video"); }, { once: true });
+      vid.addEventListener("loadeddata", () => {
+        hasVideo = true; document.body.classList.add("has-intro-video");
+        const sec = $("#s-connect"); sec.dataset.theme = "light";
+        if (document.body.dataset.slide === "s-connect") document.body.dataset.theme = "light";
+      }, { once: true });
       vid.addEventListener("ended", () => {
         if (!on) return;
         if (G) {

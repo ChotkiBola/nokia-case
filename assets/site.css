@@ -509,3 +509,7 @@ body.has-intro-video #connect { display: none; }
 .era-photo img { width: auto; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply; filter: none; }
 .era-photo figcaption { bottom: -44px; }
 @media (max-width: 900px) { .vs-wrap { grid-template-columns: 1fr; } }
+body.has-intro-video .intro-video { background: #fff; }
+.intro-credit { display: none; position: absolute; right: 24px; bottom: 74px; z-index: 3; margin: 0; font-size: 12px; color: var(--muted); }
+body.has-intro-video .intro-credit { display: block; }
+body.has-intro-video .connect-sub { color: var(--acc); }
