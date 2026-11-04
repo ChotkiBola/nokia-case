@@ -223,7 +223,8 @@
     const stats = `<div class="stats"><div><b>${me.p}</b><span>jami ball</span></div><div><b>${me.rank ? me.rank + " / " + me.of : "—"}</b><span>o‘rningiz</span></div></div>`;
     if (k < 0) {
       const t = TEAMS[me.t];
-      const head = me.teamRank === 1 ? `🏆 «${t.n}» jamoasi g‘olib!` : t ? `Jamoangiz ${me.teamRank}-o‘rinda` : "Viktorina tugadi";
+      if (!t) { simple("👏", "Viktorina tugadi", "Natijalarni katta ekranda ko‘ring. Keyingi safar siz ham qatnashing!"); return; }
+      const head = me.teamRank === 1 ? `🏆 «${t.n}» jamoasi g‘olib!` : `Jamoangiz ${me.teamRank}-o‘rinda`;
       main.innerHTML = `<div class="panel"><span class="tag">Yakuniy natija</span>${teamChip()}<div class="big-emoji">${me.teamRank === 1 ? "🏆" : "👏"}</div><h1>${head}</h1>${stats}<p class="sub" style="margin-top:14px">Ishtirok etganingiz uchun rahmat!</p></div>`;
       return;
     }
@@ -250,9 +251,11 @@
   }
 
   /* ---------- follow the presenter ---------- */
+  let beats = 0;
   async function sync() {
     try {
-      const r = await fetch("/api/live?id=" + id, { cache: "no-store" });
+      // "online" heartbeat every 4th poll (8 s) keeps the free Redis quota low
+      const r = await fetch("/api/live?id=" + id + (beats++ % 4 === 0 ? "&b=1" : ""), { cache: "no-store" });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error);
       status.className = "status"; status.textContent = "Ulandi";

@@ -296,7 +296,12 @@
     if (!st || sec.classList.contains("timeline")) return;
     st.style.transform = "none";
     const s = Math.min(1, (innerHeight - 20) / st.scrollHeight, innerWidth / st.scrollWidth);
-    st.style.transform = s < 1 ? `scale(${s})` : "none";
+    if (s >= 1) { st.style.transform = "none"; return; }
+    st.style.transform = `scale(${s})`;
+    // a stage taller than the screen is centred on itself, not on the screen: shift it back into view
+    const r = st.getBoundingClientRect();
+    const dy = (innerHeight - r.height) / 2 - r.top;
+    if (Math.abs(dy) > 1) st.style.transform = `translateY(${dy}px) scale(${s})`;
   }
   /* timeline in presentation mode: arrows, wheel, drag and swipe move the cards */
   const TLnav = (() => {
@@ -356,6 +361,7 @@
     } else if (prev !== sec) prev.classList.remove("current");
     sec.classList.add("current");
     fit(sec);
+    setTimeout(() => { if (presenting && sections[idx] === sec) fit(sec); }, 700);
     if (G && !reduce) G.fromTo(sec, { autoAlpha: 0, scale: 1.04, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: .8, ease: "power3.out", delay: prev !== sec ? .15 : 0 });
     if (sec.id === "s-timeline") TLnav.reset(dir < 0);
     current && current.classList.remove("on");

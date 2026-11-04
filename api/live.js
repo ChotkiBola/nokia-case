@@ -1,7 +1,7 @@
 import { pipe, hashToObject, fail, POLLS, CLOUDS, QUIZ, quizStats } from "./_redis.js";
 
 // GET /api/live
-//   phone:  ?id=<device id>                      -> current state + heartbeat
+//   phone:  ?id=<device id>[&b=1]                -> current state (+ heartbeat with b=1)
 //   phone after reveal: ?id=..&me=1            -> + own quiz score
 //   screen: ?screen=1[&cloud=w1][&poll=q1][&totals=1][&quiz=N] -> state, online count, recent reactions, cloud/poll counts
 export default async function handler(req, res) {
@@ -11,9 +11,9 @@ export default async function handler(req, res) {
   const cmds = [["GET", "nokia:state"], ["GET", "nokia:run"]];
   const idx = {};
   const id = typeof q.id === "string" ? q.id.slice(0, 40).replace(/[^\w-]/g, "") : "";
-  if (id) { idx.beat = cmds.length; cmds.push(["ZADD", "nokia:online", now, id]); }
+  if (id && q.b) { idx.beat = cmds.length; cmds.push(["ZADD", "nokia:online", now, id]); }
   if (q.screen) {
-    cmds.push(["ZREMRANGEBYSCORE", "nokia:online", "-inf", now - 15000]);
+    cmds.push(["ZREMRANGEBYSCORE", "nokia:online", "-inf", now - 20000]);
     idx.online = cmds.length; cmds.push(["ZCARD", "nokia:online"]);
     idx.react = cmds.length; cmds.push(["LRANGE", "nokia:react", 0, 79]);
     if (CLOUDS.includes(q.cloud)) { idx.cloud = cmds.length; cmds.push(["HGETALL", `nokia:words:${q.cloud}`]); }
@@ -42,10 +42,10 @@ export default async function handler(req, res) {
     if (id && q.me && /^(qrev:\d+|qend)$/.test(body.state)) {
       const cur = body.state === "qend" ? -1 : Number(body.state.split(":")[1]);
       const { teams, players } = await quizStats(cur);
-      const me = players[id] || { p: 0, t: "", last: null };
+      const me = players[id] || { p: 0, t: "", last: null, out: true };
       const all = Object.values(players);
       const order = Object.entries(teams).sort((a, b) => b[1].score - a[1].score).map(([t]) => t);
-      body.me = { p: me.p, t: me.t, last: me.last, rank: 1 + all.filter(x => x.p > me.p).length, of: all.length, teamRank: me.t ? order.indexOf(me.t) + 1 : 0 };
+      body.me = { p: me.p, t: me.t, last: me.last, rank: me.out ? 0 : 1 + all.filter(x => x.p > me.p).length, of: all.length, teamRank: me.t ? order.indexOf(me.t) + 1 : 0 };
       if (cur >= 0) body.correct = QUIZ[cur];
     }
     return res.status(200).json(body);
