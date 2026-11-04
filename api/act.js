@@ -1,4 +1,4 @@
-import { pipe, readBody, fail, POLLS, CLOUDS, REACTIONS } from "./_redis.js";
+import { pipe, readBody, fail, POLLS, CLOUDS, REACTIONS, GUESSES } from "./_redis.js";
 
 // POST /api/act  — audience actions from phones
 //   { t: "r", i: 0..5, n: 1..10 }        reaction (n = taps batched on the phone)
@@ -39,6 +39,16 @@ export default async function handler(req, res) {
       const w = normalizeWord(b.w);
       if (!WORD_RE.test(w)) return res.status(400).json({ error: "So‘z 1–24 ta harfdan iborat bo‘lsin" });
       await pipe([["HINCRBY", `nokia:words:${b.k}`, w, 1]]);
+      return res.status(200).json({ ok: true });
+    }
+    if (b.t === "g") {
+      if (!(b.k in GUESSES)) return res.status(400).json({ error: "Noto‘g‘ri savol" });
+      const id = String(b.id || "").replace(/[^\w-]/g, "").slice(0, 40);
+      const v = Number(String(b.v).replace(",", "."));
+      if (!id) return res.status(400).json({ error: "Qurilma aniqlanmadi" });
+      if (!Number.isFinite(v) || v < 0 || v > 100000) return res.status(400).json({ error: "0 dan 100 000 gacha son yozing" });
+      const n = String(b.n || "").replace(/[<>&"]/g, "").replace(/\s+/g, " ").trim().slice(0, 24);
+      await pipe([["HSET", `nokia:guess:${b.k}`, id, JSON.stringify({ v: Math.round(v * 10) / 10, n })]]);
       return res.status(200).json({ ok: true });
     }
     if (b.t === "v") {

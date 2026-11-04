@@ -28,6 +28,9 @@
   input[type=text]:focus { outline:none; box-shadow:inset 0 0 0 2.5px var(--blue); }
   .send { border:0; border-radius:16px; padding:0 20px; background:var(--blue); color:#fff; font:800 16px "Inter Tight", sans-serif; cursor:pointer; }
   .send:disabled { opacity:.45; }
+  .send.wide { width:100%; padding:16px; }
+  .unit { align-self:center; font:800 18px "Inter Tight", sans-serif; color:var(--muted); }
+  .big-num { font:800 64px/1 "Inter Tight", sans-serif; letter-spacing:-.04em; color:var(--blue); margin:4px 0 10px; }
   .note { margin-top:12px; font-size:14px; color:var(--muted); min-height:1.4em; }
   .note.ok { color:var(--ok); font-weight:700; } .note.err { color:var(--red); font-weight:700; }
   .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
@@ -60,6 +63,7 @@
 (() => {
   const EMO = ["👏", "🔥", "😮", "😂", "❤️", "🤯"];
   const CLOUDS = { w1: "Nokia deganda nima esingizga keladi?", w2: "Bir so‘z bilan: Nokia’dan asosiy saboq nima?" };
+  const GUESS = { g1: { q: "Nokia 3310 qancha sotilgan?", unit: "million dona", answer: 126 } };
   const POLLS = {
     q0: { q: "Siz qaysi birini tanlaysiz?", opts: { iphone: "iPhone", samsung: "Samsung", other: "Boshqa brend" } },
     q1: { q: "2011-yilda Nokia qaysi yo‘lni tanlashi kerak edi?", opts: { android: "Android ga o‘tish", wp: "Windows Phone", own: "O‘z tizimi (MeeGo)" } },
@@ -103,6 +107,8 @@
     const [kind, key] = s.split(":");
     if (kind === "cloud" && CLOUDS[key]) return cloudView(key);
     if (kind === "poll" && POLLS[key]) return pollView(key);
+    if (kind === "guess" && GUESS[key]) return guessView(key);
+    if (kind === "reveal" && GUESS[key]) return revealView(key);
     if (kind === "end") return simple("🙏", "Rahmat!", "Taqdimot tugadi. Savollaringiz bo‘lsa, hozir berishingiz mumkin. Reaksiyalar hali ham ishlaydi.");
     if (kind === "react") return simple("👀", "Taqdimotni kuzating", "Hozircha savol yo‘q. Yoqqan joyda pastdagi reaksiyalarni bosing.");
     simple("👋", "Xush kelibsiz!", "Siz taqdimotga ulandingiz. Savol yoki so‘z buluti boshlanganda shu sahifa o‘zi yangilanadi.");
@@ -137,6 +143,38 @@
       } catch (err) { note.className = "note err"; note.textContent = err.message; }
       finally { if (sent.length < MAX_WORDS) btn.disabled = false; inp.focus(); }
     });
+  }
+  function guessView(key) {
+    const g = GUESS[key], mineKey = "nokia-guess-" + key, mine = S.get(mineKey);
+    main.innerHTML = `<div class="panel"><span class="tag">Taxmin qiling</span><h1>${g.q}</h1><p class="sub">Javobni ${g.unit} hisobida yozing. Eng yaqin taxmin qilgan odam ekranda e’lon qilinadi.</p>
+      <form id="gf"><div class="row"><input type="text" id="gv" inputmode="decimal" autocomplete="off" placeholder="Masalan: 50" aria-label="Taxmin, ${g.unit}"><span class="unit">mln</span></div>
+      <div class="row"><input type="text" id="gn" maxlength="24" autocomplete="off" placeholder="Ismingiz (ixtiyoriy)" aria-label="Ismingiz"></div>
+      <div class="row"><button class="send wide" id="gs">Taxminni yuborish</button></div></form><div class="note" id="gnote"></div></div>`;
+    const f = document.getElementById("gf"), v = document.getElementById("gv"), n = document.getElementById("gn"), btn = document.getElementById("gs"), note = document.getElementById("gnote");
+    n.value = S.get("nokia-name") || "";
+    const done = m => { note.className = "note ok"; note.textContent = `Taxminingiz: ${m} mln. O‘zgartirish uchun qayta yuboring.`; };
+    if (mine) { v.value = mine; done(mine); }
+    f.addEventListener("submit", async e => {
+      e.preventDefault();
+      const val = v.value.trim().replace(",", ".");
+      if (!val || isNaN(Number(val))) { note.className = "note err"; note.textContent = "Son yozing, masalan 50"; return; }
+      btn.disabled = true;
+      try {
+        await post({ t: "g", k: key, id, v: Number(val), n: n.value.trim() });
+        S.set(mineKey, val); S.set("nokia-name", n.value.trim()); done(val);
+        if (navigator.vibrate) navigator.vibrate(15);
+      } catch (err) { note.className = "note err"; note.textContent = err.message; }
+      finally { btn.disabled = false; }
+    });
+  }
+  function revealView(key) {
+    const g = GUESS[key], mine = S.get("nokia-guess-" + key);
+    let line = "Siz taxmin yubormagansiz.";
+    if (mine) {
+      const d = Math.abs(Number(mine) - g.answer);
+      line = `Sizning taxminingiz: ${mine} mln. Farq: ${Math.round(d * 10) / 10} mln.`;
+    }
+    main.innerHTML = `<div class="panel"><span class="tag">To‘g‘ri javob</span><div class="big-num">${g.answer} mln</div><h1>${g.q}</h1><p class="sub">${line}</p></div>`;
   }
   function pollView(key) {
     const p = POLLS[key], mineKey = "nokia-vote-" + key, mine = S.get(mineKey);

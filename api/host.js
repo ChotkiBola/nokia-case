@@ -1,4 +1,4 @@
-import { pipe, readBody, fail, STATES, CLOUDS, POLLS } from "./_redis.js";
+import { pipe, readBody, fail, STATES, CLOUDS, POLLS, GUESSES } from "./_redis.js";
 
 // POST /api/host — presenter-only actions
 //   { a: "state", s: "cloud:w1", key }   tell every phone which interaction to show
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
     if (b.a === "reset") {
       await pipe([["DEL", "nokia:state", "nokia:online", "nokia:react", "nokia:react:total",
-        ...CLOUDS.map(c => `nokia:words:${c}`), ...Object.keys(POLLS).map(p => `nokia:poll:${p}`)]]);
+        ...CLOUDS.map(c => `nokia:words:${c}`), ...Object.keys(GUESSES).map(g => `nokia:guess:${g}`), ...Object.keys(POLLS).map(p => `nokia:poll:${p}`)]]);
       return res.status(200).json({ ok: true, message: "Barcha ovozlar, so‘zlar va reaksiyalar o‘chirildi" });
     }
     return res.status(400).json({ error: "Noma’lum amal" });

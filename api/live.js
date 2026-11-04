@@ -1,4 +1,4 @@
-import { pipe, hashToObject, fail, POLLS, CLOUDS } from "./_redis.js";
+import { pipe, hashToObject, fail, POLLS, CLOUDS, GUESSES } from "./_redis.js";
 
 // GET /api/live
 //   phone:  ?id=<device id>                      -> current state + heartbeat
@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     if (CLOUDS.includes(q.cloud)) { idx.cloud = cmds.length; cmds.push(["HGETALL", `nokia:words:${q.cloud}`]); }
     if (POLLS[q.poll]) { idx.poll = cmds.length; cmds.push(["HGETALL", `nokia:poll:${q.poll}`]); }
     if (q.totals) { idx.totals = cmds.length; cmds.push(["HGETALL", "nokia:react:total"]); }
+    if (q.guess in GUESSES) { idx.guess = cmds.length; cmds.push(["HVALS", `nokia:guess:${q.guess}`]); }
   }
   try {
     const out = await pipe(cmds);
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
       if (idx.cloud !== undefined) body.cloud = hashToObject(out[idx.cloud]);
       if (idx.poll !== undefined) body.poll = hashToObject(out[idx.poll]);
       if (idx.totals !== undefined) body.totals = hashToObject(out[idx.totals]);
+      if (idx.guess !== undefined) body.guess = (out[idx.guess] || []).map(x => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
     }
     return res.status(200).json(body);
   } catch (e) {

@@ -394,7 +394,7 @@
   $("#presentBtn").addEventListener("click", e => { e.currentTarget.blur(); presenting ? exitPresent() : enterPresent(0); });
   $$("[data-start]").forEach(b => b.addEventListener("click", e => { e.currentTarget.blur(); enterPresent(0); }));
   $("#prevBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); });
-  $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next())) show(idx + 1, 1); });
+  $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next()) && !(window.GuessGame && GuessGame.next())) show(idx + 1, 1); });
   $("#exitBtn").addEventListener("click", exitPresent);
   addEventListener("resize", () => { if (presenting) fit(sections[idx]); });
   document.addEventListener("fullscreenchange", () => { if (presenting) setTimeout(() => fit(sections[idx]), 150); });
@@ -404,7 +404,7 @@
     if (!presenting) { if (e.key === "p" || e.key === "P") enterPresent(0); return; }
     const onControl = e.target.closest && e.target.closest("button, a");
     if (onControl && (e.key === " " || e.key === "Enter")) return;
-    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.next())) show(idx + 1, 1); }
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.next()) && !(window.GuessGame && GuessGame.next())) show(idx + 1, 1); }
     else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); }
     else if (e.key === "Home") show(0);
     else if (e.key === "End") show(sections.length - 1);
@@ -577,6 +577,7 @@
       if (sec && sec.dataset.cloud) p.set("cloud", sec.dataset.cloud);
       if (sec && sec.dataset.poll) p.set("poll", sec.dataset.poll);
       if (sec && sec.dataset.totals) p.set("totals", 1);
+      if (sec && sec.dataset.guess) p.set("guess", sec.dataset.guess);
       try {
         const r = await fetch("/api/live?" + p, { cache: "no-store" });
         const j = await r.json();
@@ -591,6 +592,7 @@
         if (j.cloud && sec && sec.dataset.cloud) renderCloud(sec.dataset.cloud, j.cloud);
         if (j.poll && sec && sec.dataset.poll) renderPoll(sec.dataset.poll, j.poll);
         if (j.totals) renderTotals(j.totals);
+        if (j.guess && window.GuessGame) window.GuessGame.render(j.guess);
       } catch (e) {
         offline = true;
         $$("[data-online]").forEach(el => (el.textContent = "0"));
@@ -606,11 +608,26 @@
     return {
       onSlide(s) {
         sec = s;
-        sendState(s.dataset.live || "react");
+        sendState(s.id === "s-guess" && window.GuessGame && window.GuessGame.revealed ? "reveal:g1" : (s.dataset.live || "react"));
         if (!timer) { tick(); timer = setInterval(tick, 1000); }
         else tick();
       },
       demo(i) { spawn(i); },
+      sendState,
+      burst(emoji, n) {
+        for (let k = 0; k < n; k++) setTimeout(() => {
+          const el = document.createElement("span");
+          el.className = "rx"; el.textContent = emoji;
+          el.style.left = (4 + Math.random() * 92) + "vw"; el.style.fontSize = (30 + Math.random() * 34) + "px";
+          fx.appendChild(el);
+          if (!G || reduce) { setTimeout(() => el.remove(), 1200); return; }
+          const d = 2.6 + Math.random() * 1.4;
+          G.timeline({ onComplete: () => el.remove() })
+            .fromTo(el, { y: 0, autoAlpha: 1, rotate: 0 }, { y: -(innerHeight + 140), rotate: (Math.random() - .5) * 360, duration: d, ease: "power2.out" })
+            .to(el, { x: (Math.random() - .5) * 300, duration: d, ease: "sine.inOut" }, 0)
+            .to(el, { autoAlpha: 0, duration: d * .3 }, d * .7);
+        }, k * 40);
+      },
     };
   })();
 
@@ -707,6 +724,63 @@
     };
   })();
   addEventListener("resize", () => { if (document.body.dataset.slide === "s-connect") { Connect.toggle(false); Connect.toggle(true); } });
+
+  /* ================= "Taxmin qiling": guess how many Nokia 3310 were sold ================= */
+  window.GuessGame = (() => {
+    const ANSWER = 126;
+    const BUCKETS = [[0, 10, "<10"], [10, 50, "10–50"], [50, 100, "50–100"], [100, 150, "100–150"], [150, 250, "150–250"], [250, 500, "250–500"], [500, Infinity, "500+"]];
+    const hist = $("#guessHist"), count = $("#guessCount"), num = $("#guessNum"), win = $("#guessWin"), btn = $("#guessReveal");
+    if (!hist) return null;
+    let list = [], revealed = false;
+    hist.innerHTML = BUCKETS.map((b, i) => `<div class="hb" data-i="${i}"><em>0</em><i></i><small>${b[2]}</small></div>`).join("");
+    const bars = $$(".hb", hist);
+    const answerIdx = BUCKETS.findIndex(b => ANSWER >= b[0] && ANSWER < b[1]);
+    const esc = t => String(t).replace(/[<>&"]/g, "");
+    function render(l) {
+      list = Array.isArray(l) ? l : list;
+      count.textContent = list.length;
+      const c = BUCKETS.map(b => list.filter(g => g.v >= b[0] && g.v < b[1]).length);
+      const max = Math.max(1, ...c);
+      bars.forEach((el, i) => {
+        $("em", el).textContent = c[i];
+        $("i", el).style.height = (c[i] / max) * 100 + "%";
+        el.classList.toggle("hit", revealed && i === answerIdx);
+        el.classList.toggle("dim", revealed && i !== answerIdx);
+      });
+      if (revealed) showWinners();
+    }
+    function showWinners() {
+      const top = list.map(g => ({ ...g, d: Math.abs(g.v - ANSWER) })).sort((x, y) => x.d - y.d).slice(0, 3);
+      win.innerHTML = top.length
+        ? `<h3>Eng yaqin taxminlar</h3><ol>${top.map((g, i) => `<li class="${i === 0 ? "first" : ""}"><b>${esc(g.n) || "Ismsiz ishtirokchi"}</b><span>${g.v} mln</span><em>farq ${Math.round(g.d * 10) / 10}</em></li>`).join("")}</ol>`
+        : `<p>Hech kim taxmin yubormadi.</p>`;
+    }
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
+      document.body.classList.add("guess-open");
+      $("#s-guess").classList.add("revealed");
+      Live.sendState("reveal:g1");
+      if (G && !reduce) {
+        const o = { v: 0 };
+        G.to(o, { v: ANSWER, duration: 1.6, ease: "power3.out", onUpdate: () => (num.textContent = Math.round(o.v)) });
+        G.fromTo($("#guessAnswer"), { scale: .8 }, { scale: 1, duration: .9, ease: "back.out(2)" });
+      } else num.textContent = ANSWER;
+      render();
+      Live.burst("🎉", 26);
+    }
+    btn.addEventListener("click", e => { e.currentTarget.blur(); reveal(); });
+    return {
+      render,
+      get revealed() { return revealed; },
+      // in presentation mode the first "next" on this slide opens the answer
+      next() {
+        const cur = document.querySelector("section.slide.current");
+        if (!cur || cur.id !== "s-guess" || revealed) return false;
+        reveal(); return true;
+      },
+    };
+  })();
 
   setupScroll();
   activate(sections[0]);

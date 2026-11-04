@@ -8,8 +8,9 @@ export const POLLS = {
   q2: ["tech", "mgmt", "comp"],
 };
 export const CLOUDS = ["w1", "w2"];
+export const GUESSES = { g1: 126 }; // correct answers (million units)
 export const REACTIONS = 6; // indexes 0..5, mapped to emoji on the client
-export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q0", "poll:q1", "poll:q2", "end"];
+export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q0", "poll:q1", "poll:q2", "guess:g1", "reveal:g1", "end"];
 
 function creds() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
