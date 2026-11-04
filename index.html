@@ -117,26 +117,6 @@
     </div>
   </section>
 
-  <!-- Guess game -->
-  <section class="slide guess" id="s-guess" data-theme="light" data-live="guess:g1" data-guess="g1">
-    <div class="stage">
-      <p class="eyebrow" data-a="up">Taxmin qiling</p>
-      <h2 data-a="title">Nokia 3310 qancha sotilgan?</h2>
-      <p class="lede" data-a="up">Telefoningizga million dona hisobida yozing. Eng yaqin taxmin g‘olib!</p>
-      <div class="guess-grid">
-        <div class="guess-left" data-a="up">
-          <div class="guess-count"><b id="guessCount">0</b><span>ta taxmin</span></div>
-          <div class="guess-answer" id="guessAnswer" aria-live="polite"><span>To‘g‘ri javob</span><b id="guessNum">?</b><em>million dona</em></div>
-          <button class="btn" type="button" id="guessReveal">Javobni ochish</button>
-        </div>
-        <div class="guess-right" data-a="up">
-          <div class="hist" id="guessHist"></div>
-          <div class="guess-win" id="guessWin"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- 7. Timeline -->
   <section class="slide timeline" id="s-timeline" data-theme="light" data-live="react">
     <div class="stage">
@@ -165,6 +145,34 @@
         <h2 data-a="title">Har 5 telefondan 2 tasi Nokia edi</h2>
         <div class="pictogram" id="pictogram" data-a="up" aria-hidden="true"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- Team quiz: Nokia muzeyi -->
+  <section class="slide quiz" id="s-quiz" data-theme="light" data-live="team" data-quiz="1" data-phase="intro">
+    <div class="stage">
+      <div class="qz-intro">
+        <p class="eyebrow" data-a="up">Jamoaviy viktorina</p>
+        <h2 data-a="title">Nokia muzeyi: kim ko‘proq biladi?</h2>
+        <p class="lede" data-a="up">Telefoningizda ismingizni yozing va jamoa tanlang. 8 ta eksponat, har biriga 20 soniya. Tez va to‘g‘ri javob ko‘proq ball beradi.</p>
+        <div class="qz-teams" id="qzTeams" data-a="up"></div>
+      </div>
+      <div class="qz-play">
+        <figure class="qz-frame"><div class="qz-photo" id="qzPhoto"></div><figcaption id="qzCap"></figcaption></figure>
+        <div class="qz-main">
+          <div class="qz-meta"><span id="qzNum"></span><span class="qz-timer" id="qzTimer"><b>20</b></span><span id="qzAns">0 ta javob</span></div>
+          <h2 id="qzQ"></h2>
+          <div class="qz-opts" id="qzOpts"></div>
+          <p class="qz-note" id="qzNote"></p>
+        </div>
+      </div>
+      <div class="qz-end">
+        <p class="eyebrow">Viktorina natijasi</p>
+        <h2 id="qzWin">G‘olib jamoa</h2>
+        <ol class="qz-top" id="qzTop"></ol>
+      </div>
+      <div class="qz-board" id="qzBoard"></div>
+      <div class="qz-ctl"><button class="btn" type="button" id="qzNext">Viktorinani boshlash</button></div>
     </div>
   </section>
 

@@ -393,8 +393,8 @@
   }
   $("#presentBtn").addEventListener("click", e => { e.currentTarget.blur(); presenting ? exitPresent() : enterPresent(0); });
   $$("[data-start]").forEach(b => b.addEventListener("click", e => { e.currentTarget.blur(); enterPresent(0); }));
-  $("#prevBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); });
-  $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next()) && !(window.GuessGame && GuessGame.next())) show(idx + 1, 1); });
+  $("#prevBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.prev()) && !(window.Quiz && Quiz.prev())) show(idx - 1, -1); });
+  $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next()) && !(window.Quiz && Quiz.next())) show(idx + 1, 1); });
   $("#exitBtn").addEventListener("click", exitPresent);
   addEventListener("resize", () => { if (presenting) fit(sections[idx]); });
   document.addEventListener("fullscreenchange", () => { if (presenting) setTimeout(() => fit(sections[idx]), 150); });
@@ -404,8 +404,8 @@
     if (!presenting) { if (e.key === "p" || e.key === "P") enterPresent(0); return; }
     const onControl = e.target.closest && e.target.closest("button, a");
     if (onControl && (e.key === " " || e.key === "Enter")) return;
-    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.next()) && !(window.GuessGame && GuessGame.next())) show(idx + 1, 1); }
-    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); }
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.next()) && !(window.Quiz && Quiz.next())) show(idx + 1, 1); }
+    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); if (!(TLnav.active() && TLnav.prev()) && !(window.Quiz && Quiz.prev())) show(idx - 1, -1); }
     else if (e.key === "Home") show(0);
     else if (e.key === "End") show(sections.length - 1);
     else if (e.key === "Escape") exitPresent();
@@ -577,7 +577,7 @@
       if (sec && sec.dataset.cloud) p.set("cloud", sec.dataset.cloud);
       if (sec && sec.dataset.poll) p.set("poll", sec.dataset.poll);
       if (sec && sec.dataset.totals) p.set("totals", 1);
-      if (sec && sec.dataset.guess) p.set("guess", sec.dataset.guess);
+      if (sec && sec.dataset.quiz) p.set("quiz", window.Quiz ? Quiz.cur() : 0);
       try {
         const r = await fetch("/api/live?" + p, { cache: "no-store" });
         const j = await r.json();
@@ -592,7 +592,7 @@
         if (j.cloud && sec && sec.dataset.cloud) renderCloud(sec.dataset.cloud, j.cloud);
         if (j.poll && sec && sec.dataset.poll) renderPoll(sec.dataset.poll, j.poll);
         if (j.totals) renderTotals(j.totals);
-        if (j.guess && window.GuessGame) window.GuessGame.render(j.guess);
+        if (j.quiz && window.Quiz) Quiz.render(j.quiz);
       } catch (e) {
         offline = true;
         $$("[data-online]").forEach(el => (el.textContent = "0"));
@@ -608,7 +608,7 @@
     return {
       onSlide(s) {
         sec = s;
-        sendState(s.id === "s-guess" && window.GuessGame && window.GuessGame.revealed ? "reveal:g1" : (s.dataset.live || "react"));
+        sendState(s.id === "s-quiz" && window.Quiz ? Quiz.state() : (s.dataset.live || "react"));
         if (!timer) { tick(); timer = setInterval(tick, 1000); }
         else tick();
       },
@@ -725,60 +725,127 @@
   })();
   addEventListener("resize", () => { if (document.body.dataset.slide === "s-connect") { Connect.toggle(false); Connect.toggle(true); } });
 
-  /* ================= "Taxmin qiling": guess how many Nokia 3310 were sold ================= */
-  window.GuessGame = (() => {
-    const ANSWER = 126;
-    const BUCKETS = [[0, 10, "<10"], [10, 50, "10–50"], [50, 100, "50–100"], [100, 150, "100–150"], [150, 250, "150–250"], [250, 500, "250–500"], [500, Infinity, "500+"]];
-    const hist = $("#guessHist"), count = $("#guessCount"), num = $("#guessNum"), win = $("#guessWin"), btn = $("#guessReveal");
-    if (!hist) return null;
-    let list = [], revealed = false;
-    hist.innerHTML = BUCKETS.map((b, i) => `<div class="hb" data-i="${i}"><em>0</em><i></i><small>${b[2]}</small></div>`).join("");
-    const bars = $$(".hb", hist);
-    const answerIdx = BUCKETS.findIndex(b => ANSWER >= b[0] && ANSWER < b[1]);
-    const esc = t => String(t).replace(/[<>&"]/g, "");
-    function render(l) {
-      list = Array.isArray(l) ? l : list;
-      count.textContent = list.length;
-      const c = BUCKETS.map(b => list.filter(g => g.v >= b[0] && g.v < b[1]).length);
-      const max = Math.max(1, ...c);
-      bars.forEach((el, i) => {
-        $("em", el).textContent = c[i];
-        $("i", el).style.height = (c[i] / max) * 100 + "%";
-        el.classList.toggle("hit", revealed && i === answerIdx);
-        el.classList.toggle("dim", revealed && i !== answerIdx);
-      });
-      if (revealed) showWinners();
+  /* ================= team quiz «Nokia muzeyi» ================= */
+  window.Quiz = (() => {
+    const sec = $("#s-quiz");
+    if (!sec) return null;
+    const TIME = 20;
+    const TEAMS = { a: { n: "3310", c: "#005aff" }, b: { n: "1100", c: "#ff7a00" }, c: { n: "N95", c: "#00b47a" } };
+    const L = ["A", "B", "C", "D"];
+    // answers must match QUIZ in api/_redis.js
+    const Q = [
+      { w: "Nokia_3310", e: "📱", cap: "Nokia 3310", q: "Bu afsonaviy telefon qaysi yili chiqqan?", o: ["1996", "2000", "2004", "2007"], a: 1, note: "Nokia 3310 2000-yilda chiqqan va «buzilmas telefon» nomini olgan." },
+      { w: "Nokia_3310", e: "📱", cap: "Nokia 3310", q: "Nokia 3310 jami qancha sotilgan?", o: ["26 mln", "60 mln", "126 mln", "1 mlrd"], a: 2, note: "126 million dona: o‘z davrining eng ommabop telefonlaridan biri." },
+      { w: "Nokia_1100", e: "🔦", cap: "Nokia 1100", q: "Bu Nokia 1100. U qancha sotilgan?", o: ["50 mln", "120 mln", "250 mln", "1 mlrd"], a: 2, note: "250 milliondan ortiq: tarixdagi eng ko‘p sotilgan telefonlardan biri." },
+      { w: "Fredrik_Idestam", e: "🏭", cap: "Fredrik Idestam, 1865", q: "Nokia 1865-yilda nima ishlab chiqarishdan boshlangan?", o: ["Qog‘oz", "Avtomobil", "Televizor", "Soat"], a: 0, note: "Fredrik Idestam Finlyandiyada qog‘oz fabrikasini ochgan." },
+      { w: "Nokia_8110", e: "🍌", cap: "Nokia 8110 «banan»", q: "Bu «banan» telefon qaysi filmda mashhur bo‘lgan?", o: ["Titanik", "Matritsa", "Terminator 2", "Garri Potter"], a: 1, note: "1999-yilgi «Matritsa» filmida Neo shu telefondan foydalanadi." },
+      { w: "Nokia_6110", e: "🐍", cap: "Nokia 6110, 1997", q: "Bu telefon qaysi o‘yinni mashhur qilgan?", o: ["Tetris", "Pac-Man", "Snake", "Angry Birds"], a: 2, note: "Snake ilk bor 1997-yilda Nokia 6110 da paydo bo‘lgan." },
+      { w: "Mobira_Cityman_900", e: "🧱", cap: "Mobira Cityman, 1987", q: "1987-yilgi bu telefon qancha og‘ir bo‘lgan?", o: ["≈ 200 g", "≈ 400 g", "≈ 800 g", "≈ 2 kg"], a: 2, note: "Taxminan 800 gramm: hozirgi smartfondan 4 baravar og‘ir." },
+      { w: "", e: "🌍", cap: "2007-yil", q: "2007-yilda dunyodagi har 100 ta telefondan nechtasi Nokia edi?", o: ["10 tasi", "25 tasi", "40 tasi", "70 tasi"], a: 2, note: "Taxminan 40 foiz: bu Nokia’ning cho‘qqisi edi." },
+    ];
+    const box = { teams: $("#qzTeams"), photo: $("#qzPhoto"), cap: $("#qzCap"), num: $("#qzNum"), timer: $("#qzTimer"), ans: $("#qzAns"), q: $("#qzQ"), opts: $("#qzOpts"), note: $("#qzNote"), board: $("#qzBoard"), win: $("#qzWin"), top: $("#qzTop"), btn: $("#qzNext") };
+    const esc = t => String(t || "").replace(/[<>&"]/g, "");
+    let phase = "intro", step = -1, data = null, t0 = 0, tmr = 0;
+
+    box.teams.innerHTML = Object.entries(TEAMS).map(([k, t]) => `<div class="qt" style="--c:${t.c}" data-t="${k}"><b>${t.n}</b><span><em>0</em> kishi</span></div>`).join("");
+    box.board.innerHTML = Object.entries(TEAMS).map(([k, t]) => `<div class="qb" style="--c:${t.c}" data-t="${k}"><b>${t.n}</b><div class="tr"><i></i></div><span>0</span></div>`).join("");
+    Wiki.load(Q.map(x => x.w).filter(Boolean));
+    Wiki.onChange(() => { if (phase === "q" || phase === "r") photo(); });
+
+    const stateName = () => phase === "intro" ? "team" : phase === "q" ? `quiz:${step}` : phase === "r" ? `qrev:${step}` : "qend";
+    function photo() {
+      const x = Q[step], ph = x.w && Wiki.get(x.w);
+      box.photo.innerHTML = ph ? `<img src="${ph.src}" alt="${esc(x.cap)}">` : `<span class="qz-emoji">${x.e}</span>`;
+      box.cap.innerHTML = `<b>Eksponat №${step + 1}</b>${esc(x.cap)}${ph ? ` · <a href="${ph.page}" target="_blank" rel="noopener">Wikipedia</a>` : ""}`;
     }
-    function showWinners() {
-      const top = list.map(g => ({ ...g, d: Math.abs(g.v - ANSWER) })).sort((x, y) => x.d - y.d).slice(0, 3);
-      win.innerHTML = top.length
-        ? `<h3>Eng yaqin taxminlar</h3><ol>${top.map((g, i) => `<li class="${i === 0 ? "first" : ""}"><b>${esc(g.n) || "Ismsiz ishtirokchi"}</b><span>${g.v} mln</span><em>farq ${Math.round(g.d * 10) / 10}</em></li>`).join("")}</ol>`
-        : `<p>Hech kim taxmin yubormadi.</p>`;
+    function timer() {
+      const left = Math.max(0, TIME - (Date.now() - t0) / 1000);
+      box.timer.style.setProperty("--p", left / TIME);
+      box.timer.querySelector("b").textContent = Math.ceil(left);
+      box.timer.classList.toggle("low", left <= 5);
+      if (!left) { clearInterval(tmr); box.note.textContent = "Vaqt tugadi! Javobni ochish uchun → ni bosing."; }
     }
-    function reveal() {
-      if (revealed) return;
-      revealed = true;
-      document.body.classList.add("guess-open");
-      $("#s-guess").classList.add("revealed");
-      Live.sendState("reveal:g1");
-      if (G && !reduce) {
-        const o = { v: 0 };
-        G.to(o, { v: ANSWER, duration: 1.6, ease: "power3.out", onUpdate: () => (num.textContent = Math.round(o.v)) });
-        G.fromTo($("#guessAnswer"), { scale: .8 }, { scale: 1, duration: .9, ease: "back.out(2)" });
-      } else num.textContent = ANSWER;
+    function draw() {
+      sec.dataset.phase = phase;
+      clearInterval(tmr);
+      if (phase === "q" || phase === "r") {
+        const x = Q[step];
+        photo();
+        box.num.textContent = `Savol ${step + 1} / ${Q.length}`;
+        box.q.textContent = x.q;
+        box.opts.innerHTML = x.o.map((o, i) => `<div class="qo" data-i="${i}"><b>${L[i]}</b><span>${o}</span><em></em><i></i></div>`).join("");
+        box.note.textContent = "";
+        if (phase === "q") {
+          t0 = Date.now(); timer(); tmr = setInterval(timer, 200);
+          box.btn.textContent = "Javobni ochish";
+          if (G && !reduce) {
+            G.fromTo(".qz-frame", { autoAlpha: 0, rotateY: -20, scale: .9 }, { autoAlpha: 1, rotateY: 0, scale: 1, duration: .8, ease: "back.out(1.5)" });
+            G.fromTo(".qo", { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .07, duration: .5, ease: "power3.out", delay: .2 });
+          }
+        } else {
+          box.timer.style.setProperty("--p", 0); box.timer.querySelector("b").textContent = "✓";
+          $$(".qo", box.opts).forEach((el, i) => el.classList.add(i === x.a ? "ok" : "no"));
+          box.note.textContent = x.note;
+          box.btn.textContent = step + 1 < Q.length ? "Keyingi savol" : "Natijalarni ko‘rish";
+          if (G && !reduce) G.fromTo(".qo.ok", { scale: .94 }, { scale: 1, duration: .6, ease: "back.out(3)" });
+        }
+      }
+      if (phase === "intro") box.btn.textContent = "Viktorinani boshlash";
+      if (phase === "end") {
+        box.btn.textContent = "Davom etish";
+        Live.burst("🏆", 10); setTimeout(() => Live.burst("🎉", 26), 300);
+      }
       render();
-      Live.burst("🎉", 26);
+      if (presenting) fit(sec);
     }
-    btn.addEventListener("click", e => { e.currentTarget.blur(); reveal(); });
+    function set(ph, st) { phase = ph; step = st; draw(); Live.sendState(stateName()); }
+    function render(j) {
+      if (j) data = j;
+      const d = data || { counts: [0, 0, 0, 0], answered: 0, teams: {}, top: [] };
+      Object.keys(TEAMS).forEach(k => {
+        const t = d.teams[k] || { members: 0, score: 0 };
+        const q = box.teams.querySelector(`[data-t="${k}"] em`); if (q) q.textContent = t.members;
+      });
+      box.ans.textContent = `${d.answered} ta javob`;
+      if (phase === "r") {
+        const max = Math.max(1, ...d.counts);
+        $$(".qo", box.opts).forEach((el, i) => { $("em", el).textContent = d.counts[i] || 0; $("i", el).style.width = ((d.counts[i] || 0) / max) * 100 + "%"; });
+      }
+      const scores = Object.keys(TEAMS).map(k => (d.teams[k] || {}).score || 0), top = Math.max(1, ...scores);
+      Object.keys(TEAMS).forEach((k, n) => {
+        const el = box.board.querySelector(`[data-t="${k}"]`);
+        $("i", el).style.width = (scores[n] / top) * 100 + "%";
+        $("span", el).textContent = scores[n];
+        el.classList.toggle("lead", phase !== "intro" && scores[n] === Math.max(...scores) && scores[n] > 0);
+      });
+      if (phase === "end") {
+        const order = Object.keys(TEAMS).sort((x, y) => ((d.teams[y] || {}).score || 0) - ((d.teams[x] || {}).score || 0));
+        const best = order[0], bs = (d.teams[best] || {}).score || 0;
+        box.win.innerHTML = bs ? `G‘olib jamoa: <span style="color:${TEAMS[best].c}">«${TEAMS[best].n}»</span>` : "Hali ball to‘planmadi";
+        box.top.innerHTML = (d.top || []).filter(p => p.p > 0).map((p, i) => `<li><i>${i + 1}</i><b>${esc(p.n) || "Ismsiz o‘yinchi"}</b><em style="color:${(TEAMS[p.t] || {}).c || "inherit"}">${TEAMS[p.t] ? TEAMS[p.t].n : ""}</em><span>${p.p}</span></li>`).join("");
+      }
+    }
+    function advance() {
+      if (phase === "intro") set("q", 0);
+      else if (phase === "q") set("r", step);
+      else if (phase === "r") step + 1 < Q.length ? set("q", step + 1) : set("end", Q.length);
+      else return false;
+      return true;
+    }
+    function back() {
+      if (phase === "intro") return false;
+      if (phase === "q") step === 0 ? set("intro", -1) : set("r", step - 1);
+      else if (phase === "r") set("q", step);
+      else set("r", Q.length - 1);
+      return true;
+    }
+    const here = () => presenting && sections[idx] === sec;
+    box.btn.addEventListener("click", e => { e.currentTarget.blur(); if (!advance()) show(sections.indexOf(sec) + 1, 1); });
     return {
-      render,
-      get revealed() { return revealed; },
-      // in presentation mode the first "next" on this slide opens the answer
-      next() {
-        const cur = document.querySelector("section.slide.current");
-        if (!cur || cur.id !== "s-guess" || revealed) return false;
-        reveal(); return true;
-      },
+      render, state: stateName,
+      cur: () => Math.max(0, Math.min(Q.length - 1, step)),
+      next: () => here() && advance(),
+      prev: () => here() && back(),
     };
   })();
 

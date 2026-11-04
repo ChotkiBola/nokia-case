@@ -8,9 +8,12 @@ export const POLLS = {
   q2: ["tech", "mgmt", "comp"],
 };
 export const CLOUDS = ["w1", "w2"];
-export const GUESSES = { g1: 126 }; // correct answers (million units)
+// team quiz «Nokia muzeyi»: index of the correct option for each question (texts live in site.js / join.html)
+export const QUIZ = [1, 2, 2, 0, 1, 2, 2, 2];
+export const QUIZ_TIME = 20000; // ms per question
+export const TEAMS = ["a", "b", "c"];
 export const REACTIONS = 6; // indexes 0..5, mapped to emoji on the client
-export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q0", "poll:q1", "poll:q2", "guess:g1", "reveal:g1", "end"];
+export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q0", "poll:q1", "poll:q2", "team", ...QUIZ.flatMap((_, i) => [`quiz:${i}`, `qrev:${i}`]), "qend", "end"];
 
 function creds() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
@@ -62,4 +65,36 @@ export async function readBody(req) {
 
 export function fail(res, e) {
   return res.status(e.status || 500).json({ error: e.message || "Server xatosi" });
+}
+
+// Scores for the quiz: every player's total, team averages, option counts for question `cur`.
+export async function quizStats(cur) {
+  const out = await pipe([["HGETALL", "nokia:team"], ...QUIZ.map((_, i) => ["HGETALL", `nokia:ans:${i}`])]);
+  const parse = x => { try { return JSON.parse(x); } catch { return null; } };
+  const players = {};
+  const tf = out[0] || [];
+  for (let i = 0; i < tf.length; i += 2) {
+    const v = parse(tf[i + 1]);
+    if (v && TEAMS.includes(v.t)) players[tf[i]] = { n: v.n || "", t: v.t, p: 0, last: null };
+  }
+  const counts = [0, 0, 0, 0];
+  let answered = 0;
+  out.slice(1).forEach((flat, qi) => {
+    flat = flat || [];
+    for (let i = 0; i < flat.length; i += 2) {
+      const v = parse(flat[i + 1]);
+      if (!v) continue;
+      const pl = players[flat[i]] || (players[flat[i]] = { n: "", t: v.t, p: 0, last: null });
+      pl.p += Number(v.p) || 0;
+      if (qi === cur) { answered++; if (counts[v.o] !== undefined) counts[v.o]++; pl.last = v; }
+    }
+  });
+  const teams = {};
+  TEAMS.forEach(t => {
+    const m = Object.values(players).filter(p => p.t === t);
+    const sum = m.reduce((a, p) => a + p.p, 0);
+    teams[t] = { members: m.length, sum, score: m.length ? Math.round(sum / m.length) : 0 };
+  });
+  const top = Object.values(players).sort((a, b) => b.p - a.p).slice(0, 5).map(({ n, t, p }) => ({ n, t, p }));
+  return { counts, answered, teams, top, players };
 }

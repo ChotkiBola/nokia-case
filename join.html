@@ -30,7 +30,21 @@
   .send:disabled { opacity:.45; }
   .send.wide { width:100%; padding:16px; }
   .unit { align-self:center; font:800 18px "Inter Tight", sans-serif; color:var(--muted); }
-  .big-num { font:800 64px/1 "Inter Tight", sans-serif; letter-spacing:-.04em; color:var(--blue); margin:4px 0 10px; }
+  .big-num { font:800 54px/1 "Inter Tight", sans-serif; letter-spacing:-.04em; color:var(--blue); margin:4px 0 10px; }
+  .teams { display:grid; gap:10px; margin-top:16px; }
+  .team { display:flex; align-items:center; justify-content:space-between; border:0; border-radius:18px; padding:18px 20px; cursor:pointer; background:var(--bg); color:var(--c); font:800 24px "Inter Tight", sans-serif; box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--c) 30%, transparent); }
+  .team small { font:700 14px Manrope, sans-serif; color:var(--muted); }
+  .team.mine { background:var(--c); color:#fff; } .team.mine small { color:#fff; }
+  .qa { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .qa button { min-height:96px; border:0; border-radius:20px; color:#fff; font:800 19px/1.2 "Inter Tight", sans-serif; padding:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; transition:transform .12s, opacity .3s; }
+  .qa button b { font-size:26px; }
+  .qa button:active { transform:scale(.95); }
+  .qa button:nth-child(1) { background:#005aff; } .qa button:nth-child(2) { background:#ff7a00; } .qa button:nth-child(3) { background:#00b47a; } .qa button:nth-child(4) { background:#a64dff; }
+  .qa button[disabled] { opacity:.25; } .qa button.mine { opacity:1; outline:4px solid var(--fg); outline-offset:-4px; }
+  .mychip { display:inline-flex; gap:6px; align-items:center; font-weight:800; font-size:14px; color:var(--c); margin-left:8px; }
+  .res { font:800 34px/1.1 "Inter Tight", sans-serif; margin:6px 0 8px; } .res.ok { color:var(--ok); } .res.no { color:var(--red); }
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .stats div { background:var(--bg); border-radius:16px; padding:12px 14px; } .stats b { display:block; font:800 26px "Inter Tight", sans-serif; } .stats span { font-size:13px; color:var(--muted); font-weight:700; }
   .note { margin-top:12px; font-size:14px; color:var(--muted); min-height:1.4em; }
   .note.ok { color:var(--ok); font-weight:700; } .note.err { color:var(--red); font-weight:700; }
   .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
@@ -63,7 +77,18 @@
 (() => {
   const EMO = ["👏", "🔥", "😮", "😂", "❤️", "🤯"];
   const CLOUDS = { w1: "Nokia deganda nima esingizga keladi?", w2: "Bir so‘z bilan: Nokia’dan asosiy saboq nima?" };
-  const GUESS = { g1: { q: "Nokia 3310 qancha sotilgan?", unit: "million dona", answer: 126 } };
+  const TEAMS = { a: { n: "3310", c: "#005aff" }, b: { n: "1100", c: "#ff7a00" }, c: { n: "N95", c: "#00b47a" } };
+  const QUIZ = [
+    ["Nokia 3310 qaysi yili chiqqan?", ["1996", "2000", "2004", "2007"]],
+    ["Nokia 3310 jami qancha sotilgan?", ["26 mln", "60 mln", "126 mln", "1 mlrd"]],
+    ["Nokia 1100 qancha sotilgan?", ["50 mln", "120 mln", "250 mln", "1 mlrd"]],
+    ["Nokia 1865-yilda nima ishlab chiqarishdan boshlangan?", ["Qog‘oz", "Avtomobil", "Televizor", "Soat"]],
+    ["«Banan» telefon qaysi filmda mashhur bo‘lgan?", ["Titanik", "Matritsa", "Terminator 2", "Garri Potter"]],
+    ["Nokia 6110 qaysi o‘yinni mashhur qilgan?", ["Tetris", "Pac-Man", "Snake", "Angry Birds"]],
+    ["1987-yilgi Mobira Cityman qancha og‘ir bo‘lgan?", ["≈ 200 g", "≈ 400 g", "≈ 800 g", "≈ 2 kg"]],
+    ["2007-yilda har 100 ta telefondan nechtasi Nokia edi?", ["10 tasi", "25 tasi", "40 tasi", "70 tasi"]],
+  ];
+  const L = ["A", "B", "C", "D"];
   const POLLS = {
     q0: { q: "Siz qaysi birini tanlaysiz?", opts: { iphone: "iPhone", samsung: "Samsung", other: "Boshqa brend" } },
     q1: { q: "2011-yilda Nokia qaysi yo‘lni tanlashi kerak edi?", opts: { android: "Android ga o‘tish", wp: "Windows Phone", own: "O‘z tizimi (MeeGo)" } },
@@ -107,8 +132,10 @@
     const [kind, key] = s.split(":");
     if (kind === "cloud" && CLOUDS[key]) return cloudView(key);
     if (kind === "poll" && POLLS[key]) return pollView(key);
-    if (kind === "guess" && GUESS[key]) return guessView(key);
-    if (kind === "reveal" && GUESS[key]) return revealView(key);
+    if (kind === "team") return teamView();
+    if (kind === "quiz" && QUIZ[key]) return S.get("nokia-team") ? quizView(Number(key)) : teamView(Number(key));
+    if (kind === "qrev" && QUIZ[key]) return resultView(Number(key));
+    if (kind === "qend") return resultView(-1);
     if (kind === "end") return simple("🙏", "Rahmat!", "Taqdimot tugadi. Savollaringiz bo‘lsa, hozir berishingiz mumkin. Reaksiyalar hali ham ishlaydi.");
     if (kind === "react") return simple("👀", "Taqdimotni kuzating", "Hozircha savol yo‘q. Yoqqan joyda pastdagi reaksiyalarni bosing.");
     simple("👋", "Xush kelibsiz!", "Siz taqdimotga ulandingiz. Savol yoki so‘z buluti boshlanganda shu sahifa o‘zi yangilanadi.");
@@ -144,37 +171,68 @@
       finally { if (sent.length < MAX_WORDS) btn.disabled = false; inp.focus(); }
     });
   }
-  function guessView(key) {
-    const g = GUESS[key], mineKey = "nokia-guess-" + key, mine = S.get(mineKey);
-    main.innerHTML = `<div class="panel"><span class="tag">Taxmin qiling</span><h1>${g.q}</h1><p class="sub">Javobni ${g.unit} hisobida yozing. Eng yaqin taxmin qilgan odam ekranda e’lon qilinadi.</p>
-      <form id="gf"><div class="row"><input type="text" id="gv" inputmode="decimal" autocomplete="off" placeholder="Masalan: 50" aria-label="Taxmin, ${g.unit}"><span class="unit">mln</span></div>
-      <div class="row"><input type="text" id="gn" maxlength="24" autocomplete="off" placeholder="Ismingiz (ixtiyoriy)" aria-label="Ismingiz"></div>
-      <div class="row"><button class="send wide" id="gs">Taxminni yuborish</button></div></form><div class="note" id="gnote"></div></div>`;
-    const f = document.getElementById("gf"), v = document.getElementById("gv"), n = document.getElementById("gn"), btn = document.getElementById("gs"), note = document.getElementById("gnote");
-    n.value = S.get("nokia-name") || "";
-    const done = m => { note.className = "note ok"; note.textContent = `Taxminingiz: ${m} mln. O‘zgartirish uchun qayta yuboring.`; };
-    if (mine) { v.value = mine; done(mine); }
-    f.addEventListener("submit", async e => {
-      e.preventDefault();
-      const val = v.value.trim().replace(",", ".");
-      if (!val || isNaN(Number(val))) { note.className = "note err"; note.textContent = "Son yozing, masalan 50"; return; }
-      btn.disabled = true;
+  /* ---------- team quiz ---------- */
+  const teamChip = () => { const t = TEAMS[S.get("nokia-team")]; return t ? `<span class="mychip" style="--c:${t.c}">● ${t.n}</span>` : ""; };
+  // then = question index to open right after picking a team (when the quiz already started)
+  function teamView(then) {
+    const mine = S.get("nokia-team");
+    main.innerHTML = `<div class="panel"><span class="tag">Jamoaviy viktorina</span><h1>Ismingizni yozing va jamoa tanlang</h1><p class="sub">8 ta savol. Tez va to‘g‘ri javob ko‘proq ball beradi.</p>
+      <div class="row"><input type="text" id="tn" maxlength="24" autocomplete="off" placeholder="Ismingiz" aria-label="Ismingiz"></div>
+      <div class="teams">${Object.entries(TEAMS).map(([k, t]) => `<button class="team${k === mine ? " mine" : ""}" type="button" data-k="${k}" style="--c:${t.c}">${t.n}<small>${k === mine ? "Sizning jamoangiz" : "Qo‘shilish"}</small></button>`).join("")}</div>
+      <div class="note" id="tnote">${mine ? "Jamoani o‘zgartirish mumkin. Savollar boshlanishini kuting." : ""}</div></div>`;
+    const inp = document.getElementById("tn"), note = document.getElementById("tnote");
+    inp.value = S.get("nokia-name") || "";
+    main.querySelectorAll(".team").forEach(b => b.addEventListener("click", async () => {
+      const name = inp.value.trim();
+      if (!name) { note.className = "note err"; note.textContent = "Avval ismingizni yozing"; inp.focus(); return; }
       try {
-        await post({ t: "g", k: key, id, v: Number(val), n: n.value.trim() });
-        S.set(mineKey, val); S.set("nokia-name", n.value.trim()); done(val);
+        await post({ t: "team", id, team: b.dataset.k, n: name });
+        S.set("nokia-team", b.dataset.k); S.set("nokia-name", name);
         if (navigator.vibrate) navigator.vibrate(15);
+        if (then !== undefined && state === "quiz:" + then) return quizView(then);
+        teamView(); document.getElementById("tnote").className = "note ok";
       } catch (err) { note.className = "note err"; note.textContent = err.message; }
-      finally { btn.disabled = false; }
-    });
+    }));
   }
-  function revealView(key) {
-    const g = GUESS[key], mine = S.get("nokia-guess-" + key);
-    let line = "Siz taxmin yubormagansiz.";
-    if (mine) {
-      const d = Math.abs(Number(mine) - g.answer);
-      line = `Sizning taxminingiz: ${mine} mln. Farq: ${Math.round(d * 10) / 10} mln.`;
+  function quizView(k) {
+    const [q, opts] = QUIZ[k], mine = S.get("nokia-ans-" + k);
+    main.innerHTML = `<div class="panel"><span class="tag">Savol ${k + 1} / ${QUIZ.length}</span>${teamChip()}<h1>${q}</h1>
+      <div class="qa">${opts.map((o, i) => `<button type="button" data-i="${i}"><b>${L[i]}</b>${o}</button>`).join("")}</div><div class="note" id="qn"></div></div>`;
+    const btns = [...main.querySelectorAll(".qa button")], note = document.getElementById("qn");
+    const lock = m => { btns.forEach(b => { b.disabled = true; b.classList.toggle("mine", b.dataset.i === String(m)); }); note.className = "note ok"; note.textContent = "Javob qabul qilindi. Natijani katta ekranda kuting."; };
+    if (mine !== null) lock(mine);
+    btns.forEach(b => b.addEventListener("click", async () => {
+      btns.forEach(x => (x.disabled = true));
+      try {
+        await post({ t: "a", id, k, o: Number(b.dataset.i) });
+        S.set("nokia-ans-" + k, b.dataset.i); lock(b.dataset.i);
+        if (navigator.vibrate) navigator.vibrate(15);
+      } catch (err) {
+        note.className = "note err"; note.textContent = err.message;
+        if (!/Vaqt|yopildi/.test(err.message)) btns.forEach(x => (x.disabled = false));
+      }
+    }));
+  }
+  async function resultView(k) {
+    const st = state;
+    main.innerHTML = `<div class="panel"><span class="tag">${k < 0 ? "Yakuniy natija" : "Savol " + (k + 1)}</span><h1>Natija hisoblanmoqda…</h1></div>`;
+    let j = null;
+    try { const r = await fetch("/api/live?me=1&id=" + id, { cache: "no-store" }); j = await r.json(); } catch (e) {}
+    if (state !== st) return;
+    const me = (j && j.me) || { p: 0, rank: 0, of: 0, teamRank: 0 };
+    const stats = `<div class="stats"><div><b>${me.p}</b><span>jami ball</span></div><div><b>${me.rank ? me.rank + " / " + me.of : "—"}</b><span>o‘rningiz</span></div></div>`;
+    if (k < 0) {
+      const t = TEAMS[me.t];
+      const head = me.teamRank === 1 ? `🏆 «${t.n}» jamoasi g‘olib!` : t ? `Jamoangiz ${me.teamRank}-o‘rinda` : "Viktorina tugadi";
+      main.innerHTML = `<div class="panel"><span class="tag">Yakuniy natija</span>${teamChip()}<div class="big-emoji">${me.teamRank === 1 ? "🏆" : "👏"}</div><h1>${head}</h1>${stats}<p class="sub" style="margin-top:14px">Ishtirok etganingiz uchun rahmat!</p></div>`;
+      return;
     }
-    main.innerHTML = `<div class="panel"><span class="tag">To‘g‘ri javob</span><div class="big-num">${g.answer} mln</div><h1>${g.q}</h1><p class="sub">${line}</p></div>`;
+    const [q, opts] = QUIZ[k], c = j && typeof j.correct === "number" ? j.correct : -1;
+    const last = me.last, mine = S.get("nokia-ans-" + k);
+    const right = last ? last.p > 0 : mine !== null && Number(mine) === c;
+    const res = mine === null && !last ? `<div class="res">⏱ Javob berilmadi</div>` : right ? `<div class="res ok">✅ To‘g‘ri! +${last ? last.p : ""}</div>` : `<div class="res no">❌ Noto‘g‘ri</div>`;
+    main.innerHTML = `<div class="panel"><span class="tag">Savol ${k + 1} / ${QUIZ.length}</span>${teamChip()}${res}<h1>${q}</h1><p class="sub">To‘g‘ri javob: <b>${c >= 0 ? L[c] + ") " + opts[c] : "ekranda"}</b></p>${stats}</div>`;
+    if (right && navigator.vibrate) navigator.vibrate([20, 60, 20]);
   }
   function pollView(key) {
     const p = POLLS[key], mineKey = "nokia-vote-" + key, mine = S.get(mineKey);
@@ -198,6 +256,11 @@
       const j = await r.json();
       if (!r.ok) throw new Error(j.error);
       status.className = "status"; status.textContent = "Ulandi";
+      // after a reset on the screen, forget this phone's earlier votes and answers
+      if (j.run && j.run !== S.get("nokia-run")) {
+        try { Object.keys(localStorage).filter(k => /^nokia-(ans|vote|words)-/.test(k)).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+        S.set("nokia-run", j.run); state = null;
+      }
       view(j.state || "welcome");
     } catch (e) {
       status.className = "status off";
