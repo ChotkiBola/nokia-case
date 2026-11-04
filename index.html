@@ -28,13 +28,48 @@
 </aside>
 
 <main>
-  <!-- 1. Hero -->
+  <!-- 1. iPhone or Samsung (+ QR to join) -->
+  <section class="slide versus" id="s-vs" data-theme="light" data-live="poll:q0" data-poll="q0">
+    <div class="stage">
+      <div class="vs-wrap">
+        <div>
+          <h2 data-a="title">Siz qaysi birini tanlaysiz?</h2>
+          <div data-poll-box="q0">
+            <div class="vs">
+              <div class="vs-side a" data-opt="iphone" data-a="up"><span class="name">iPhone</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
+              <div class="vs-mid" data-a="pop"><span>yoki</span></div>
+              <div class="vs-side b" data-opt="samsung" data-a="up"><span class="name">Samsung</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
+            </div>
+            <div class="vs-other" data-a="up"><div class="opt-lite" data-opt="other"><span class="name">Boshqa brend</span> <span class="cnt">0</span><div class="track-bar"><i></i></div></div></div>
+          </div>
+          <p class="poll-total" data-a="up"><span data-poll-total="q0">0</span> ta ovoz, <span data-online>0</span> kishi ulangan</p>
+        </div>
+        <div class="qr-big small" data-a="scale">
+          <div class="qr" data-qr></div>
+          <p>Skanerlang va ovoz bering</p>
+          <small data-join-url></small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Nokia reveal -->
+  <section class="slide connect" id="s-connect" data-theme="dark" data-live="react">
+    <canvas id="connect" aria-hidden="true"></canvas>
+    <video id="introVideo" class="intro-video" playsinline preload="auto" aria-hidden="true"><source src="/assets/intro.mp4" type="video/mp4"><source src="/assets/intro.webm" type="video/webm"></video>
+    <div class="stage">
+      <h2 class="connect-title" id="connectTitle">Bugun Nokia haqida gaplashamiz</h2>
+      <p class="connect-sub" id="connectSub">«Connecting People», 1992</p>
+    </div>
+  </section>
+
+  <!-- 3. Hero -->
   <section class="slide hero" id="s-hero" data-theme="light" data-live="welcome">
     <div class="stage">
       <div>
         <p class="eyebrow" data-a="up">Xalqaro tadbirkorlik fanidan case study</p>
-        <div class="mega hero-q" data-a="letters" aria-label="Case study">Case study</div>
-        <h1 class="sub" data-a="title">Dunyoni egallagan, yo‘qotgan va qayta tug‘ilgan brend</h1>
+        <div class="mega" data-a="letters" aria-label="Nokia">Nokia</div>
+        <h1 class="sub" data-a="title">Yuksalish, inqiroz va qayta tug‘ilish</h1>
         <div class="actions" data-a="up">
           <button class="btn" type="button" data-start>Taqdimotni boshlash</button>
           <a class="btn ghost" href="#s-join">Aylantirib o‘qish</a>
@@ -48,47 +83,9 @@
     </div>
   </section>
 
-  <!-- 2. Join -->
-  <section class="slide join" id="s-join" data-theme="light" data-live="welcome">
-    <div class="stage">
-      <div>
-        <h2 data-a="title">Telefoningizni oling</h2>
-        <p class="lede" data-a="up">QR-kodni skanerlang: ovoz berasiz, so‘z yozasiz va reaksiya bildirasiz.</p>
-        <div class="online-big" data-a="up"><b data-online>0</b><span>kishi ulandi</span></div>
-        <div class="emoji-row" data-a="pop"><span>👏</span><span>🔥</span><span>😮</span><span>😂</span><span>❤️</span><span>🤯</span></div>
-      </div>
-      <div class="qr-big" data-a="scale">
-        <div class="qr" data-qr></div>
-        <p data-join-url></p>
-      </div>
-    </div>
-  </section>
 
-  <!-- 3. iPhone or Samsung -->
-  <section class="slide versus" id="s-vs" data-theme="light" data-live="poll:q0" data-poll="q0">
-    <div class="stage">
-      <h2 data-a="title">Siz qaysi birini tanlaysiz?</h2>
-      <div data-poll-box="q0">
-      <div class="vs">
-        <div class="vs-side a" data-opt="iphone" data-a="up"><span class="name">iPhone</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
-        <div class="vs-mid" data-a="pop"><span>yoki</span></div>
-        <div class="vs-side b" data-opt="samsung" data-a="up"><span class="name">Samsung</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
-      </div>
-      <div class="vs-other" data-a="up"><div class="opt-lite" data-opt="other"><span class="name">Boshqa brend</span> <span class="cnt">0</span><div class="track-bar"><i></i></div></div></div>
-      </div>
-      <p class="poll-total" data-a="up">Telefoningizdan ovoz bering. <span data-poll-total="q0">0</span> ta ovoz</p>
-    </div>
-  </section>
 
-  <!-- 4. Today: Nokia (connection animation) -->
-  <section class="slide connect" id="s-connect" data-theme="dark" data-live="react">
-    <canvas id="connect" aria-hidden="true"></canvas>
-    <div class="stage">
-      <p class="connect-pre" data-a="up">2007-yilda esa dunyodagi har 5 telefondan 2 tasi bitta brendniki edi</p>
-      <h2 class="connect-title" id="connectTitle">Bugun Nokia haqida gaplashamiz</h2>
-      <p class="connect-sub" id="connectSub">«Connecting People», 1992</p>
-    </div>
-  </section>
+
 
   <!-- 5. Word cloud -->
   <section class="slide" id="s-cloud1" data-theme="light" data-live="cloud:w1" data-cloud="w1">

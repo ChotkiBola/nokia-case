@@ -399,7 +399,7 @@
     sections[idx].scrollIntoView();
   }
   $("#presentBtn").addEventListener("click", e => { e.currentTarget.blur(); presenting ? exitPresent() : enterPresent(0); });
-  $$("[data-start]").forEach(b => b.addEventListener("click", e => { e.currentTarget.blur(); enterPresent(1); }));
+  $$("[data-start]").forEach(b => b.addEventListener("click", e => { e.currentTarget.blur(); enterPresent(0); }));
   $("#prevBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.prev())) show(idx - 1, -1); });
   $("#nextBtn").addEventListener("click", () => { if (!(TLnav.active() && TLnav.next())) show(idx + 1, 1); });
   $("#exitBtn").addEventListener("click", exitPresent);
@@ -671,11 +671,33 @@
       if (!el.dataset.split) { el.dataset.split = 1; el.innerHTML = el.textContent.trim().split(/\s+/).map(w => `<span class="w"><span>${w}</span></span>`).join(" "); }
       return $$(".w > span", el);
     }
+    // optional video: if /assets/intro.mp4 exists it plays instead of the canvas animation
+    const vid = $("#introVideo");
+    let hasVideo = false;
+    if (vid) {
+      vid.addEventListener("loadeddata", () => { hasVideo = true; document.body.classList.add("has-intro-video"); }, { once: true });
+      vid.addEventListener("ended", () => {
+        if (!on) return;
+        if (G) {
+          G.to(vid, { autoAlpha: 0, duration: .8 });
+          G.set([title, sub], { visibility: "visible" });
+          G.fromTo(words(title), { yPercent: 115 }, { yPercent: 0, stagger: .08, duration: 1, ease: "expo.out", delay: .4 });
+          G.fromTo(sub, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .8, delay: 1.2 });
+        } else { vid.style.opacity = 0; title.style.visibility = sub.style.visibility = "visible"; }
+      });
+    }
+    function playVideo() {
+      if (G) G.set([title, sub], { visibility: "hidden" }); else title.style.visibility = sub.style.visibility = "hidden";
+      if (G) G.set(vid, { autoAlpha: 1 }); else vid.style.opacity = 1;
+      vid.currentTime = 0; vid.muted = false;
+      vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+    }
     return {
       toggle(v) {
         if (v === on) return;
         on = v; cancelAnimationFrame(raf);
-        if (!on) return;
+        if (!on) { if (vid) vid.pause(); return; }
+        if (hasVideo) { playVideo(); return; }
         size(); build(); t0 = performance.now();
         if (reduce) { on = false; frame(t0 + 5000); title.style.visibility = sub.style.visibility = "visible"; return; }
         raf = requestAnimationFrame(frame);
