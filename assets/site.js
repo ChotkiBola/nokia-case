@@ -34,21 +34,47 @@
 
   /* ================= dynamic content ================= */
   const TL = [
-    ["1865", "Fredrik Idestam qog‘oz fabrikasiga asos soldi", "rise"],
-    ["1967", "Qog‘oz, rezina va kabel zavodlari birlashib, Nokia korporatsiyasi tuzildi", "rise"],
-    ["1987", "Birinchi qo‘lda olib yuriladigan telefon, Mobira Cityman", "rise"],
-    ["1991", "Dunyodagi birinchi GSM qo‘ng‘irog‘i Nokia uskunalari orqali amalga oshirildi", "rise"],
-    ["1992", "Yorma Ollila bosh direktor, kompaniya mobil aloqaga ixtisoslashdi", "rise"],
-    ["1998", "Nokia dunyodagi eng yirik telefon ishlab chiqaruvchisi", "rise"],
-    ["2007", "Bozor ulushi cho‘qqida, Apple iPhone’ni taqdim etdi", "crisis"],
-    ["2011", "«Yonayotgan platforma» maktubi, Windows Phone tanlandi", "crisis"],
-    ["2013", "Telefon biznesi Microsoftga 5,44 mlrd yevroga sotildi", "crisis"],
-    ["2016", "Alcatel-Lucent sotib olindi, brend HMDga litsenziyaga berildi", "rebirth"],
-    ["2025", "Infinera sotib olindi, Nvidia 1 mlrd dollar kiritdi", "rebirth"],
-    ["2026", "Sun’iy intellekt infratuzilmasiga burilish", "rebirth"],
+    ["1865", "Fredrik Idestam Tampere yaqinida yog‘och massasi (qog‘oz xomashyosi) fabrikasini ochdi", "rise", "", "paper"],
+    ["1871", "Leo Mechelin bilan birga Nokia Ab aksiyadorlik jamiyati tuzildi", "rise", "", "paper"],
+    ["1967", "Qog‘oz, rezina va kabel zavodlari birlashib, Nokia korporatsiyasi tuzildi", "rise", "", "cable"],
+    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri chiqdi. 1989-yilda Gorbachyov undan Helsinkidan Moskvaga qo‘ng‘iroq qildi", "rise", "Mobira Cityman", "brick"],
+    ["1992", "Yorma Ollila bosh direktor bo‘ldi. Dunyodagi birinchi tijoriy GSM telefon chiqdi", "rise", "Nokia 1011", "early"],
+    ["1994", "Telefonda ilk bor mashhur «Nokia tune» qo‘ng‘iroq ohangi yangradi", "rise", "Nokia 2110", "early"],
+    ["1997", "Telefonga Snake o‘yini o‘rnatildi va millionlab odamlarning sevimli o‘yiniga aylandi", "rise", "Nokia 6110", "classic"],
+    ["1998", "Nokia Motorolani ortda qoldirib, dunyodagi eng yirik telefon ishlab chiqaruvchisiga aylandi", "rise", "Nokia 5110", "classic"],
+    ["2000", "Almashtiriladigan panellar va Snake II. Taxminan 126 million dona sotildi", "rise", "Nokia 3310", "classic"],
+    ["2003", "Rivojlanayotgan bozorlar uchun arzon va chidamli telefon. 250 milliondan ortiq sotildi", "rise", "Nokia 1100", "classic"],
+    ["2007", "Bozor ulushi cho‘qqida. Shu yili Apple iPhone’ni taqdim etdi", "crisis", "Nokia N95", "slider"],
+    ["2011", "«Yonayotgan platforma» maktubi. Windows Phone tanlandi", "crisis", "Nokia Lumia 800", "touch"],
+    ["2013", "Telefon biznesi Microsoftga 5,44 mlrd yevroga sotildi", "crisis", "Nokia Lumia 1020", "touch"],
+    ["2016", "Alcatel-Lucent sotib olindi, brend HMDga litsenziyaga berildi", "rebirth", "5G tarmoq uskunalari", "network"],
+    ["2025", "Infinera sotib olindi, Nvidia 1 mlrd dollar investitsiya kiritdi", "rebirth", "Optik tarmoqlar", "network"],
+    ["2026", "Sun’iy intellekt ma’lumot markazlari uchun infratuzilma", "rebirth", "AI tarmoqlari", "network"],
   ];
   const track = $("#track");
-  track.innerHTML = TL.map(([y, t, p]) => `<div class="tcard" data-p="${p}"><b>${y}</b><p>${t}</p></div>`).join("");
+  track.innerHTML = TL.map(([y, t, p, m, e], i) => `<div class="tcard" data-p="${p}" data-era="${e}" data-i="${i}"><b>${y}</b>${m ? `<span class="tmodel">${m}</span>` : ""}<p>${t}</p></div>`).join("");
+  const tcards = $$(".tcard", track);
+  const ERA_LABEL = { paper: "Qog‘oz fabrikasi davri", cable: "Kabel va rezina davri", brick: "Ilk mobil telefonlar", early: "Ilk GSM telefonlar", classic: "Tugmali telefonlar davri", slider: "Ilk smartfonlar", touch: "Sensorli smartfonlar", network: "Tarmoq va AI infratuzilmasi" };
+  let tlAct = -1;
+  function setTlAct(i) {
+    i = Math.max(0, Math.min(TL.length - 1, i));
+    if (i === tlAct) return;
+    tlAct = i;
+    tcards.forEach((c, k) => c.classList.toggle("active", k === i));
+    const [y, , , , e] = TL[i];
+    const cap = $("#eraCap");
+    if (cap) cap.innerHTML = `<b>${y}</b><span>${ERA_LABEL[e]}</span>`;
+    if (window.Era3D) window.Era3D.show(e, y);
+    else window.__eraPending = [e, y];
+  }
+  // nearest card to a focus line that slides from 22% to 80% of the screen as the track scrolls
+  function tlActFromPosition(progress) {
+    const fx = innerWidth * (.22 + .58 * progress);
+    let best = 0, bd = Infinity;
+    tcards.forEach((c, k) => { const r = c.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - fx); if (d < bd) { bd = d; best = k; } });
+    setTlAct(best);
+  }
+  setTlAct(0);
 
   const pic = $("#pictogram");
   const phoneSvg = '<svg class="ph" viewBox="0 0 40 72"><rect class="body" x="2" y="2" width="36" height="68" rx="9"/><rect x="8" y="10" width="24" height="20" rx="3" fill="rgba(255,255,255,.75)"/><g fill="rgba(255,255,255,.6)"><rect x="8" y="38" width="6" height="4" rx="2"/><rect x="17" y="38" width="6" height="4" rx="2"/><rect x="26" y="38" width="6" height="4" rx="2"/><rect x="8" y="46" width="6" height="4" rx="2"/><rect x="17" y="46" width="6" height="4" rx="2"/><rect x="26" y="46" width="6" height="4" rx="2"/><rect x="8" y="54" width="6" height="4" rx="2"/><rect x="17" y="54" width="6" height="4" rx="2"/><rect x="26" y="54" width="6" height="4" rx="2"/></g></svg>';
@@ -191,6 +217,7 @@
         trigger: tlSec, start: "top top", end: "bottom bottom", scrub: .6,
         animation: G.fromTo(track, { x: 0 }, { x: () => -(track.scrollWidth - innerWidth + 40), ease: "none" }),
         invalidateOnRefresh: true,
+        onUpdate: self => requestAnimationFrame(() => tlActFromPosition(self.progress)),
       }));
       G.to("#phone3d", { yPercent: 18, ease: "none", scrollTrigger: { trigger: "#s-hero", start: "top top", end: "bottom top", scrub: true } });
     }
@@ -212,27 +239,37 @@
   const TLnav = (() => {
     let x = 0;
     const max = () => Math.max(0, track.scrollWidth - innerWidth + 40);
-    const step = () => Math.max(300, innerWidth * .55);
     const bar = $("#tlBar i");
-    function to(v, dur = .8) {
+    function move(v, dur = .8, fromPos = true) {
       x = Math.max(0, Math.min(max(), v));
-      if (G) G.to(track, { x: -x, duration: reduce ? 0 : dur, ease: "power3.out", overwrite: true });
-      else track.style.transform = `translateX(${-x}px)`;
+      const sync = () => fromPos && tlActFromPosition(max() ? x / max() : 0);
+      if (G) G.to(track, { x: -x, duration: reduce ? 0 : dur, ease: "power3.out", overwrite: true, onUpdate: sync });
+      else { track.style.transform = `translateX(${-x}px)`; sync(); }
       if (bar) bar.style.width = (max() ? (x / max()) * 100 : 100) + "%";
+    }
+    // bring card i near the left third of the screen and make it active
+    function goCard(i) {
+      i = Math.max(0, Math.min(tcards.length - 1, i));
+      setTlAct(i);
+      const c = tcards[i];
+      move(c.offsetLeft + c.offsetWidth / 2 - innerWidth * .35, .9, false);
     }
     return {
       active: () => presenting && sections[idx] && sections[idx].id === "s-timeline",
       reset(atEnd) {
         if (G) G.killTweensOf(track);
-        to(atEnd ? max() : 0, 0);
-        if (G && !reduce) G.fromTo($$(".tcard", track), { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .05, duration: .7, ease: "power3.out", delay: .3 });
+        tlAct = -1;
+        goCard(atEnd ? tcards.length - 1 : 0);
+        if (G && !reduce) G.fromTo(tcards, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .04, duration: .7, ease: "power3.out", delay: .3, clearProps: "opacity,visibility,transform" });
       },
-      next() { if (x >= max() - 4) return false; to(x + step()); return true; },
-      prev() { if (x <= 4) return false; to(x - step()); return true; },
-      by(d, dur) { to(x + d, dur); },
+      next() { if (tlAct >= tcards.length - 1) return false; goCard(tlAct + 1); return true; },
+      prev() { if (tlAct <= 0) return false; goCard(tlAct - 1); return true; },
+      go: goCard,
+      by(d, dur) { move(x + d, dur); },
       get x() { return x; },
     };
   })();
+  tcards.forEach((c, k) => c.addEventListener("click", () => { if (TLnav.active()) TLnav.go(k); }));
   const tlSec = $("#s-timeline");
   tlSec.addEventListener("wheel", e => {
     if (!TLnav.active()) return;

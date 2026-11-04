@@ -88,13 +88,44 @@
     </div>
   </section>
 
+  <!-- asoschilar va rahbarlar -->
+  <section class="slide" id="s-people" data-theme="light" data-live="react">
+    <div class="stage">
+      <p class="eyebrow" data-a="up">Asoschilar va rahbarlar</p>
+      <h2 data-a="title">Nokia’ni kimlar qurgan</h2>
+      <div class="founders">
+        <div class="founder" data-a="up"><b>1865</b><h3>Fredrik Idestam</h3><p>Tog‘-kon muhandisi. Tampere yaqinida yog‘och massasi fabrikasini ochgan.</p></div>
+        <div class="founder" data-a="up"><b>1871</b><h3>Leo Mexelin</h3><p>Davlat arbobi. Idestam bilan birga Nokia Ab aksiyadorlik jamiyatini tuzgan.</p></div>
+        <div class="founder" data-a="up"><b>1898</b><h3>Eduard Polon</h3><p>Finlyandiya rezina zavodiga asos solgan: rezina etik va shinalar.</p></div>
+        <div class="founder" data-a="up"><b>1912</b><h3>Arvid Vikstryom</h3><p>Finlyandiya kabel zavodiga asos solgan. 1967-yilda uchala kompaniya birlashgan.</p></div>
+      </div>
+      <h3 class="ceo-title" data-a="up">Bosh ijrochi direktorlar</h3>
+      <ol class="ceos" data-a="up">
+        <li><b>1977–1988</b><strong>Kari Kayramo</strong><span>Xalqarolashtirish, elektronika va telekommunikatsiya</span></li>
+        <li><b>1988–1992</b><strong>Simo Vuorilehto</strong><span>Qiyin yillar va qayta tashkil etish</span></li>
+        <li class="hi"><b>1992–2006</b><strong>Yorma Ollila</strong><span>Mobil aloqaga fokus va jahon yetakchiligi</span></li>
+        <li><b>2006–2010</b><strong>Olli-Pekka Kallasvuo</strong><span>Smartfon inqilobi davri</span></li>
+        <li class="lo"><b>2010–2013</b><strong>Stiven Elop</strong><span>Windows Phone, telefon biznesining sotilishi</span></li>
+        <li><b>2014–2020</b><strong>Rajiv Suri</strong><span>Alcatel-Lucent, tarmoq kompaniyasiga aylanish</span></li>
+        <li><b>2020–2025</b><strong>Pekka Lundmark</strong><span>5G va restrukturizatsiya</span></li>
+        <li class="hi"><b>2025–</b><strong>Jastin Xotard</strong><span>AI infratuzilmasi, Nvidia bilan hamkorlik</span></li>
+      </ol>
+    </div>
+  </section>
+
   <!-- 5 -->
   <section class="slide timeline" id="s-timeline" data-theme="light" data-live="react">
     <div class="stage">
-      <div class="head">
-        <p class="eyebrow" data-a="up">Vaqt chizig‘i</p>
-        <h2 data-a="title">160 yil bir qarashda</h2>
-        <div class="tl-help"><div class="tl-bar" id="tlBar"><i></i></div><span>Strelkalar, sichqoncha g‘ildiragi yoki sudrash bilan oldinga va orqaga suring</span></div>
+      <div class="tl-top">
+        <div class="head">
+          <p class="eyebrow" data-a="up">Vaqt chizig‘i</p>
+          <h2 data-a="title">160 yil bir qarashda</h2>
+          <div class="tl-help"><div class="tl-bar" id="tlBar"><i></i></div><span>Strelkalar, g‘ildirak yoki sudrash bilan yilma-yil suring</span></div>
+        </div>
+        <div class="era-box" aria-hidden="true">
+          <canvas id="era3d"></canvas>
+          <div class="era-cap" id="eraCap"></div>
+        </div>
       </div>
       <div class="track" id="track"></div>
     </div>
@@ -112,6 +143,25 @@
         <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg></div><h3>Keng qator</h3><p>Arzon telefondan biznes modelgacha har bir segment uchun mahsulot.</p></div>
         <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><h3>Ta’minot zanjiri</h3><p>Katta ishlab chiqarish hajmi tannarxni pasaytirdi.</p></div>
         <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Yangi bozorlar</h3><p>Osiyo, Afrika va MDHda, jumladan O‘zbekistonda eng ommabop brend.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- marketing -->
+  <section class="slide" id="s-marketing" data-theme="light" data-live="react">
+    <div class="stage">
+      <p class="eyebrow" data-a="up">Marketing</p>
+      <h2 data-a="title">Nokia qanday sevildi</h2>
+      <p class="lede" data-a="up">Nokia telefonni texnik qurilma sifatida emas, odamlarni bog‘laydigan, o‘yin va o‘zini ifoda etish vositasi sifatida sotdi.</p>
+      <div class="mkt">
+        <div class="mcard" data-a="up"><b>1989</b><h3>«Gorba» qo‘ng‘irog‘i</h3><p>Mixail Gorbachyov Helsinkida Nokia telefonidan Moskvaga qo‘ng‘iroq qildi. Finlyandiyada telefon «Gorba» laqabini oldi. Tasodifiy, lekin bebaho reklama.</p></div>
+        <div class="mcard" data-a="up"><b>1990-yillar</b><h3>«Connecting People»</h3><p>Texnologiya emas, odamlarni bog‘lash va’dasi. Shior 20 yildan ortiq kompaniya missiyasi bo‘lib qoldi.</p></div>
+        <div class="mcard" data-a="up"><b>1994</b><h3>Nokia tune</h3><p>Tarreganing 1902-yilgi «Gran Vals» asaridan olingan ohang. 2009-yildagi taxminga ko‘ra, dunyoda kuniga 1,8 milliard marta yangragan.</p></div>
+        <div class="mcard" data-a="up"><b>1997</b><h3>Snake o‘yini</h3><p>Telefonga o‘rnatilgan oddiy o‘yin odamlarni qurilmaga bog‘ladi. 3310 modelida Snake II bilan davom etdi.</p></div>
+        <div class="mcard" data-a="up"><b>1999</b><h3>«Matritsa» filmi</h3><p>Filmda bosh qahramon Nokia 8110’dan foydalandi. 2018-yilda bu model qayta chiqarildi.</p></div>
+        <div class="mcard" data-a="up"><b>2000</b><h3>Almashtiriladigan panellar</h3><p>Xpress-on panellar telefonni aksessuarga aylantirdi. 3310 qariyb 126 million dona sotildi.</p></div>
+        <div class="mcard" data-a="up"><b>2003</b><h3>Har bir bozor uchun telefon</h3><p>Nokia 1100: chang o‘tkazmaydigan klaviatura, fonar va arzon narx. 250 milliondan ortiq sotildi.</p></div>
+        <div class="mcard key" data-a="up"><h3>Saboq</h3><p>Kuchli brend his-tuyg‘u, oddiylik va har bir mijozga mos mahsulotdan quriladi.</p></div>
       </div>
     </div>
   </section>
@@ -374,5 +424,6 @@
 <script src="/assets/snake.js"></script>
 <script src="/assets/site.js"></script>
 <script type="module" src="/assets/phone3d.js"></script>
+<script type="module" src="/assets/era3d.js"></script>
 </body>
 </html>
