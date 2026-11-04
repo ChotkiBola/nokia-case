@@ -33,39 +33,61 @@
   } catch (e) { $$("[data-qr]").forEach(el => (el.textContent = "QR")); }
 
   /* ================= dynamic content ================= */
+  // [year, short text, phase, famous model, 3D era, Wikipedia article for the photo]
   const TL = [
-    ["1865", "Fredrik Idestam Tampere yaqinida yog‘och massasi (qog‘oz xomashyosi) fabrikasini ochdi", "rise", "", "paper"],
-    ["1871", "Leo Mechelin bilan birga Nokia Ab aksiyadorlik jamiyati tuzildi", "rise", "", "paper"],
-    ["1967", "Qog‘oz, rezina va kabel zavodlari birlashib, Nokia korporatsiyasi tuzildi", "rise", "", "cable"],
-    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri chiqdi. 1989-yilda Gorbachyov Nokia telefonidan Helsinkidan Moskvaga qo‘ng‘iroq qildi", "rise", "Mobira Cityman", "brick"],
-    ["1992", "Yorma Ollila bosh direktor bo‘ldi. Dunyodagi birinchi tijoriy GSM telefon chiqdi", "rise", "Nokia 1011", "early"],
-    ["1994", "Telefonda ilk bor mashhur «Nokia tune» qo‘ng‘iroq ohangi yangradi", "rise", "Nokia 2110", "early"],
-    ["1997", "Telefonga Snake o‘yini o‘rnatildi va millionlab odamlarning sevimli o‘yiniga aylandi", "rise", "Nokia 6110", "classic"],
-    ["1998", "Nokia Motorolani ortda qoldirib, dunyodagi eng yirik telefon ishlab chiqaruvchisiga aylandi", "rise", "Nokia 5110", "classic"],
-    ["2000", "Almashtiriladigan panellar va Snake II. Taxminan 126 million dona sotildi", "rise", "Nokia 3310", "classic"],
-    ["2003", "Rivojlanayotgan bozorlar uchun arzon va chidamli telefon. 250 milliondan ortiq sotildi", "rise", "Nokia 1100", "classic"],
-    ["2007", "Bozor ulushi cho‘qqida. Shu yili Apple iPhone’ni taqdim etdi", "crisis", "Nokia N95", "slider"],
-    ["2011", "«Yonayotgan platforma» maktubi. Windows Phone tanlandi", "crisis", "Nokia Lumia 800", "touch"],
-    ["2013", "Telefon biznesi Microsoftga 5,44 mlrd yevroga sotildi", "crisis", "Nokia Lumia 1020", "touch"],
-    ["2016", "Alcatel-Lucent sotib olindi, brend HMDga litsenziyaga berildi", "rebirth", "5G tarmoq uskunalari", "network"],
-    ["2025", "Infinera sotib olindi, Nvidia 1 mlrd dollar investitsiya kiritdi", "rebirth", "Optik tarmoqlar", "network"],
-    ["2026", "Sun’iy intellekt ma’lumot markazlari uchun infratuzilma", "rebirth", "AI tarmoqlari", "network"],
+    ["1865", "Qog‘oz fabrikasi ochildi", "rise", "", "paper", ""],
+    ["1871", "Nokia Ab kompaniyasi tuzildi", "rise", "", "paper", ""],
+    ["1967", "Uch zavod birlashib, Nokia korporatsiyasi tuzildi", "rise", "", "cable", ""],
+    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri", "rise", "Mobira Cityman", "brick", "Mobira_Cityman_900"],
+    ["1992", "Birinchi tijoriy GSM telefon", "rise", "Nokia 1011", "early", "Nokia_1011"],
+    ["1994", "Ilk bor «Nokia tune» yangradi", "rise", "Nokia 2110", "early", "Nokia_2110"],
+    ["1997", "Telefonga Snake o‘yini keldi", "rise", "Nokia 6110", "classic", "Nokia_6110"],
+    ["1998", "Nokia dunyoda 1-o‘rinda", "rise", "Nokia 5110", "classic", "Nokia_5110"],
+    ["2000", "126 million dona sotildi", "rise", "Nokia 3310", "classic", "Nokia_3310"],
+    ["2003", "250 milliondan ortiq sotildi", "rise", "Nokia 1100", "classic", "Nokia_1100"],
+    ["2007", "Cho‘qqi. Shu yili iPhone chiqdi", "crisis", "Nokia N95", "slider", "Nokia_N95"],
+    ["2011", "Windows Phone tanlandi", "crisis", "Nokia Lumia 800", "touch", "Nokia_Lumia_800"],
+    ["2013", "Telefon biznesi sotildi", "crisis", "Nokia Lumia 1020", "touch", "Nokia_Lumia_1020"],
+    ["2016", "Alcatel-Lucent sotib olindi", "rebirth", "5G uskunalari", "network", ""],
+    ["2025", "Nvidia 1 mlrd $ kiritdi", "rebirth", "Optik tarmoqlar", "network", ""],
+    ["2026", "AI infratuzilmasi", "rebirth", "AI tarmoqlari", "network", ""],
   ];
   const track = $("#track");
   track.innerHTML = TL.map(([y, t, p, m, e], i) => `<div class="tcard" data-p="${p}" data-era="${e}" data-i="${i}"><b>${y}</b>${m ? `<span class="tmodel">${m}</span>` : ""}<p>${t}</p></div>`).join("");
   const tcards = $$(".tcard", track);
   const ERA_LABEL = { paper: "Qog‘oz fabrikasi davri", cable: "Kabel va rezina davri", brick: "Ilk mobil telefonlar", early: "Ilk GSM telefonlar", classic: "Tugmali telefonlar davri", slider: "Ilk smartfonlar", touch: "Sensorli smartfonlar", network: "Tarmoq va AI infratuzilmasi" };
   let tlAct = -1;
+  const eraPhoto = $("#eraPhoto"), eraImg = $("#eraImg"), eraCredit = $("#eraCredit");
+  function showEra(i) {
+    const [y, , , m, e, wiki] = TL[i];
+    const ph = wiki && Wiki.get(wiki);
+    if (ph) {
+      // real photo from Wikipedia
+      document.body.classList.add("era-has-photo");
+      const swap = () => {
+        eraImg.src = ph.src; eraImg.alt = m;
+        eraCredit.innerHTML = `Foto: <a href="${ph.page}" target="_blank" rel="noopener">Wikipedia</a>`;
+      };
+      if (G && !reduce) {
+        G.to(eraPhoto, { autoAlpha: 0, y: 20, rotateY: -25, duration: .25, ease: "power2.in", onComplete: () => {
+          swap();
+          G.fromTo(eraPhoto, { autoAlpha: 0, y: 30, rotateY: 30, scale: .9 }, { autoAlpha: 1, y: 0, rotateY: 0, scale: 1, duration: .8, ease: "back.out(1.4)" });
+        } });
+      } else { swap(); eraPhoto.style.opacity = 1; eraPhoto.style.visibility = "visible"; }
+    } else {
+      document.body.classList.remove("era-has-photo");
+      if (window.Era3D) window.Era3D.show(e, y); else window.__eraPending = [e, y];
+    }
+  }
   function setTlAct(i) {
     i = Math.max(0, Math.min(TL.length - 1, i));
     if (i === tlAct) return;
     tlAct = i;
     tcards.forEach((c, k) => c.classList.toggle("active", k === i));
-    const [y, , , , e] = TL[i];
+    const [y, , , m, e] = TL[i];
     const cap = $("#eraCap");
-    if (cap) cap.innerHTML = `<b>${y}</b><span>${ERA_LABEL[e]}</span>`;
-    if (window.Era3D) window.Era3D.show(e, y);
-    else window.__eraPending = [e, y];
+    if (cap) cap.innerHTML = `<b>${y}</b><span>${m || ERA_LABEL[e]}</span>`;
+    showEra(i);
   }
   // nearest card to a focus line that slides from 22% to 80% of the screen as the track scrolls
   function tlActFromPosition(progress) {
@@ -74,6 +96,52 @@
     tcards.forEach((c, k) => { const r = c.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - fx); if (d < bd) { bd = d; best = k; } });
     setTlAct(best);
   }
+
+  /* ---------- photos from Wikipedia (loaded in the viewer's browser, cached) ---------- */
+  var Wiki = (() => {
+    const KEY = "nokia-wiki-v1", map = {};
+    try { Object.assign(map, JSON.parse(store.get(KEY) || "{}")); } catch (e) {}
+    const listeners = [];
+    function apply() {
+      $$("[data-wiki]").forEach(el => {
+        const ph = map[el.dataset.wiki], box = $(".ph", el);
+        if (ph && box && !box.querySelector("img")) {
+          const img = new Image();
+          img.alt = ""; img.loading = "lazy"; img.decoding = "async";
+          img.onload = () => box.classList.add("has-img");
+          img.src = ph.src;
+          box.appendChild(img);
+          box.title = "Foto: Wikipedia";
+        }
+      });
+      listeners.forEach(f => f());
+    }
+    async function load(titles) {
+      const need = titles.filter(t => t && !map[t]);
+      for (let i = 0; i < need.length; i += 20) {
+        const chunk = need.slice(i, i + 20);
+        const url = "https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=600&titles=" + encodeURIComponent(chunk.join("|"));
+        try {
+          const j = await (await fetch(url)).json();
+          const back = {};
+          (j.query.normalized || []).forEach(n => (back[n.to] = n.from));
+          (j.query.redirects || []).forEach(n => (back[n.to] = back[n.from] || n.from));
+          Object.values(j.query.pages || {}).forEach(pg => {
+            if (!pg.thumbnail) return;
+            const original = back[pg.title] || pg.title.replace(/ /g, "_");
+            const keyT = chunk.find(t => t === original || t.replace(/_/g, " ") === pg.title || t.replace(/_/g, " ") === original.replace(/_/g, " ")) || original;
+            map[keyT] = { src: pg.thumbnail.source, page: "https://en.wikipedia.org/wiki/" + encodeURIComponent(pg.title.replace(/ /g, "_")) };
+          });
+        } catch (e) { /* offline or blocked: keep 3D and initials */ }
+      }
+      store.set(KEY, JSON.stringify(map));
+      apply();
+    }
+    return { get: t => map[t], load, apply, onChange: f => listeners.push(f) };
+  })();
+  Wiki.onChange(() => { if (tlAct >= 0) { const i = tlAct; tlAct = -1; setTlAct(i); } });
+  Wiki.apply();
+  Wiki.load([...TL.map(r => r[5]), ...$$("[data-wiki]").map(el => el.dataset.wiki)]);
   setTlAct(0);
 
   const pic = $("#pictogram");
@@ -81,11 +149,10 @@
   pic.innerHTML = phoneSvg.repeat(5);
 
   const PS = [
-    ["Mobil tarmoqlar bozori turg‘un", "Uskuna bilan birga obuna asosidagi dasturiy ta’minot va AI-RAN xizmatlarini sotish"],
-    ["2025-yilda rentabellik 13,4% dan 10,2% ga tushdi", "Kam daromadli yo‘nalishlardan chiqish, IP va optik tarmoqlarga e’tibor, Infinera’dan 200 mln € tejamkorlik"],
-    ["Restrukturizatsiya tufayli pul oqimi manfiy", "Dasturni muddatida yakunlash, zaxiralar va debitorlik qarzlarini qat’iy nazorat qilish"],
-    ["AI talabiga ishlab chiqarish quvvati yetmayapti", "Yangi optik zavodlarni tezroq ishga tushirish, Nvidia bilan birgalikda rejalashtirish"],
-    ["Huawei va Ericsson bilan narx raqobati", "Narx emas, «ishonchli yetkazib beruvchi» maqomi, energiya tejamkorlik va 6G yetakchiligi bilan raqobatlashish"],
+    ["Mobil tarmoqlar bozori turg‘un", "Dasturiy ta’minot va AI-RAN xizmatlarini obuna asosida sotish"],
+    ["Foyda 2025-yilda kamaydi", "Kam daromadli yo‘nalishlardan chiqish, IP va optik tarmoqlarga e’tibor"],
+    ["AI talabiga quvvat yetmayapti", "Yangi zavodlarni tezroq ishga tushirish, Nvidia bilan rejalashtirish"],
+    ["Huawei va Ericsson bilan narx raqobati", "Narx emas, ishonchlilik va 6G yetakchiligi bilan raqobatlashish"],
   ];
   const psGrid = $("#psGrid");
   PS.forEach(([p, s], i) => {
@@ -196,6 +263,7 @@
       document.body.dataset.slide = sec.id;
       Live.onSlide(sec);
       Embers.toggle(sec.id === "s-platform");
+      Connect.toggle(sec.id === "s-connect");
       if (sec.id === "s-finale" && window.SnakeRahmat) setTimeout(() => window.SnakeRahmat.startMessage(), 700);
     }
     if (replay || !played.has(sec)) { played.add(sec); playIn(sec); }
@@ -360,7 +428,7 @@
   var Embers = (() => {
     const cv = $("#embers"), ctx = cv.getContext("2d");
     let on = false, parts = [], raf = 0;
-    function size() { const r = cv.getBoundingClientRect(); cv.width = r.width; cv.height = r.height; }
+    function size() { cv.width = cv.clientWidth; cv.height = cv.clientHeight; }
     function spawn() { return { x: Math.random() * cv.width, y: cv.height + 10, r: 1 + Math.random() * 3, vy: .6 + Math.random() * 1.8, vx: (Math.random() - .5) * .6, life: 0, max: 240 + Math.random() * 200, h: 10 + Math.random() * 30 }; }
     function frame() {
       ctx.clearRect(0, 0, cv.width, cv.height);
@@ -550,6 +618,74 @@
       demo(i) { spawn(i); },
     };
   })();
+
+  /* ================= intro: two sides connect (original animation) ================= */
+  var Connect = (() => {
+    const cv = $("#connect"), ctx = cv.getContext("2d");
+    const title = $("#connectTitle"), sub = $("#connectSub");
+    let on = false, raf = 0, t0 = 0, pts = [];
+    function size() { cv.width = cv.clientWidth * devicePixelRatio; cv.height = cv.clientHeight * devicePixelRatio; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+    function build() {
+      const W = cv.clientWidth, H = cv.clientHeight;
+      pts = [];
+      for (let i = 0; i < 90; i++) {
+        const side = i % 2 ? 1 : -1;
+        pts.push({ side, sx: side < 0 ? -40 : W + 40, sy: Math.random() * H, tx: W / 2 + side * (40 + Math.random() * W * .38), ty: H * .5 + (Math.random() - .5) * H * .7, d: Math.random() * .6 });
+      }
+    }
+    const ease = k => 1 - Math.pow(1 - Math.min(1, Math.max(0, k)), 3);
+    function frame(now) {
+      const W = cv.clientWidth, H = cv.clientHeight, t = (now - t0) / 1000;
+      ctx.clearRect(0, 0, W, H);
+      const cx = W / 2, cy = H * .5;
+      // two lead points travel toward the centre and meet
+      const k = ease(t / 1.6);
+      const lx = -20 + (cx - 6 + 20) * k, rx = W + 20 - (W + 20 - cx - 6) * k;
+      const glow = (x, y, r, a) => { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(120,180,255,${a})`); g.addColorStop(1, "rgba(120,180,255,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); };
+      ctx.strokeStyle = "rgba(90,150,255,.9)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-20, cy); ctx.lineTo(lx, cy); ctx.moveTo(W + 20, cy); ctx.lineTo(rx, cy); ctx.stroke();
+      glow(lx, cy, 26, .9); glow(rx, cy, 26, .9);
+      if (k >= 1) {
+        const p = Math.min(1, (t - 1.6) / .5);
+        glow(cx, cy, 60 + p * 260, .55 * (1 - p) + .15);
+      }
+      // the network grows from both sides after they meet
+      const nk = ease((t - 1.8) / 2.2);
+      if (nk > 0) {
+        const cur = pts.map(q => ({ x: q.sx + (q.tx - q.sx) * ease((t - 1.8 - q.d) / 1.8), y: q.sy + (q.ty - q.sy) * ease((t - 1.8 - q.d) / 1.8), side: q.side }));
+        ctx.lineWidth = 1;
+        for (let i = 0; i < cur.length; i++) {
+          for (let j = i + 1; j < cur.length; j++) {
+            const dx = cur[i].x - cur[j].x, dy = cur[i].y - cur[j].y, d = Math.hypot(dx, dy);
+            if (d < 120) { ctx.strokeStyle = `rgba(110,170,255,${(1 - d / 120) * .35 * nk})`; ctx.beginPath(); ctx.moveTo(cur[i].x, cur[i].y); ctx.lineTo(cur[j].x, cur[j].y); ctx.stroke(); }
+          }
+          ctx.strokeStyle = `rgba(110,170,255,${.12 * nk})`; ctx.beginPath(); ctx.moveTo(cur[i].x, cur[i].y); ctx.lineTo(cx, cy); ctx.stroke();
+        }
+        cur.forEach(c => { ctx.fillStyle = c.side < 0 ? "rgba(160,200,255,.9)" : "rgba(130,240,255,.9)"; ctx.beginPath(); ctx.arc(c.x, c.y, 2.4, 0, 7); ctx.fill(); });
+      }
+      if (on) raf = requestAnimationFrame(frame);
+    }
+    function words(el) {
+      if (!el.dataset.split) { el.dataset.split = 1; el.innerHTML = el.textContent.trim().split(/\s+/).map(w => `<span class="w"><span>${w}</span></span>`).join(" "); }
+      return $$(".w > span", el);
+    }
+    return {
+      toggle(v) {
+        if (v === on) return;
+        on = v; cancelAnimationFrame(raf);
+        if (!on) return;
+        size(); build(); t0 = performance.now();
+        if (reduce) { on = false; frame(t0 + 5000); title.style.visibility = sub.style.visibility = "visible"; return; }
+        raf = requestAnimationFrame(frame);
+        if (G) {
+          G.set([title, sub], { visibility: "visible" });
+          G.fromTo(words(title), { yPercent: 115 }, { yPercent: 0, stagger: .08, duration: 1, ease: "expo.out", delay: 1.9 });
+          G.fromTo(sub, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .8, delay: 2.8 });
+        }
+      },
+    };
+  })();
+  addEventListener("resize", () => { if (document.body.dataset.slide === "s-connect") { Connect.toggle(false); Connect.toggle(true); } });
 
   setupScroll();
   activate(sections[0]);

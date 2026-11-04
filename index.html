@@ -28,14 +28,13 @@
 </aside>
 
 <main>
-  <!-- 1 -->
+  <!-- 1. Hero -->
   <section class="slide hero" id="s-hero" data-theme="light" data-live="welcome">
     <div class="stage">
       <div>
         <p class="eyebrow" data-a="up">Xalqaro tadbirkorlik fanidan case study</p>
         <div class="mega" data-a="letters" aria-label="Nokia">Nokia</div>
         <h1 class="sub" data-a="title">Yuksalish, inqiroz va qayta tug‘ilish</h1>
-        <p class="lede" data-a="up">Jahon telefon bozorining 40 foizini egallagan kompaniya olti yilda bu bozordan chiqib ketdi. Keyin esa o‘zini butunlay qayta qurdi.</p>
         <div class="actions" data-a="up">
           <button class="btn" type="button" data-start>Taqdimotni boshlash</button>
           <a class="btn ghost" href="#s-join">Aylantirib o‘qish</a>
@@ -49,15 +48,14 @@
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- 2. Join -->
   <section class="slide join" id="s-join" data-theme="light" data-live="welcome">
     <div class="stage">
       <div>
         <h2 data-a="title">Telefoningizni oling</h2>
-        <p class="lede" data-a="up">QR-kodni skanerlang. Taqdimot davomida reaksiya bildirasiz, so‘z yozasiz va ovoz berasiz. Telefoningizdagi sahifa slaydlarga o‘zi ergashadi.</p>
+        <p class="lede" data-a="up">QR-kodni skanerlang: ovoz berasiz, so‘z yozasiz va reaksiya bildirasiz.</p>
         <div class="online-big" data-a="up"><b data-online>0</b><span>kishi ulandi</span></div>
         <div class="emoji-row" data-a="pop"><span>👏</span><span>🔥</span><span>😮</span><span>😂</span><span>❤️</span><span>🤯</span></div>
-        <p class="lede" data-a="up" style="font-size:17px;margin-top:14px">Bosgan reaksiyangiz shu ekranda uchib chiqadi.</p>
       </div>
       <div class="qr-big" data-a="scale">
         <div class="qr" data-qr></div>
@@ -66,7 +64,33 @@
     </div>
   </section>
 
-  <!-- 3 -->
+  <!-- 3. iPhone or Samsung -->
+  <section class="slide versus" id="s-vs" data-theme="light" data-live="poll:q0" data-poll="q0">
+    <div class="stage">
+      <h2 data-a="title">Siz qaysi birini tanlaysiz?</h2>
+      <div data-poll-box="q0">
+      <div class="vs">
+        <div class="vs-side a" data-opt="iphone" data-a="up"><span class="name">iPhone</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
+        <div class="vs-mid" data-a="pop"><span>yoki</span></div>
+        <div class="vs-side b" data-opt="samsung" data-a="up"><span class="name">Samsung</span><span class="cnt">0</span><div class="track-bar"><i></i></div></div>
+      </div>
+      <div class="vs-other" data-a="up"><div class="opt-lite" data-opt="other"><span class="name">Boshqa brend</span> <span class="cnt">0</span><div class="track-bar"><i></i></div></div></div>
+      </div>
+      <p class="poll-total" data-a="up">Telefoningizdan ovoz bering. <span data-poll-total="q0">0</span> ta ovoz</p>
+    </div>
+  </section>
+
+  <!-- 4. Today: Nokia (connection animation) -->
+  <section class="slide connect" id="s-connect" data-theme="dark" data-live="react">
+    <canvas id="connect" aria-hidden="true"></canvas>
+    <div class="stage">
+      <p class="connect-pre" data-a="up">2007-yilda esa dunyodagi har 5 telefondan 2 tasi bitta brendniki edi</p>
+      <h2 class="connect-title" id="connectTitle">Bugun Nokia haqida gaplashamiz</h2>
+      <p class="connect-sub" id="connectSub">«Connecting People», 1992</p>
+    </div>
+  </section>
+
+  <!-- 5. Word cloud -->
   <section class="slide" id="s-cloud1" data-theme="light" data-live="cloud:w1" data-cloud="w1">
     <div class="stage">
       <p class="eyebrow" data-a="up">So‘z buluti</p>
@@ -79,51 +103,41 @@
     </div>
   </section>
 
-  <!-- 4 -->
-  <section class="slide" id="s-1865" data-theme="light" data-live="react">
-    <div class="stage">
-      <div class="mega acc" data-a="up" data-count="1865" data-from="1700" data-plain="1">1865</div>
-      <h2 data-a="title">Hammasi qog‘oz fabrikasidan boshlangan</h2>
-      <p class="lede" data-a="up">Fredrik Idestam Finlyandiyada qog‘oz fabrikasiga asos solgan. Keyingi yuz yil ichida kompaniya rezina etik, kabel, televizor va kompyuter ham ishlab chiqargan.</p>
-    </div>
-  </section>
-
-  <!-- asoschilar va rahbarlar -->
+  <!-- 6. People -->
   <section class="slide" id="s-people" data-theme="light" data-live="react">
     <div class="stage">
-      <p class="eyebrow" data-a="up">Asoschilar va rahbarlar</p>
       <h2 data-a="title">Nokia’ni kimlar qurgan</h2>
-      <div class="founders">
-        <div class="founder" data-a="up"><b>1865</b><h3>Fredrik Idestam</h3><p>Tog‘-kon muhandisi. Tampere yaqinida yog‘och massasi fabrikasini ochgan.</p></div>
-        <div class="founder" data-a="up"><b>1871</b><h3>Leo Mexelin</h3><p>Davlat arbobi. Idestam bilan birga Nokia Ab aksiyadorlik jamiyatini tuzgan.</p></div>
-        <div class="founder" data-a="up"><b>1898</b><h3>Eduard Polon</h3><p>Finlyandiya rezina zavodiga asos solgan: rezina etik va shinalar.</p></div>
-        <div class="founder" data-a="up"><b>1912</b><h3>Arvid Vikstryom</h3><p>Finlyandiya kabel zavodiga asos solgan. 1967-yilda uchala kompaniya birlashgan.</p></div>
+      <div class="people-top">
+        <div class="person big" data-a="up" data-wiki="Fredrik_Idestam"><div class="ph"><span>FI</span></div><div><b>1865</b><h3>Fredrik Idestam</h3><p>Qog‘oz fabrikasini ochgan</p></div></div>
+        <div class="person big" data-a="up" data-wiki="Leo_Mechelin"><div class="ph"><span>LM</span></div><div><b>1871</b><h3>Leo Mexelin</h3><p>Nokia Ab kompaniyasini tuzgan</p></div></div>
+        <div class="merge" data-a="up"><b>1967</b><p>Rezina va kabel zavodlari bilan birlashib, <strong>Nokia korporatsiyasi</strong> tuzildi</p></div>
       </div>
-      <h3 class="ceo-title" data-a="up">Bosh ijrochi direktorlar</h3>
-      <ol class="ceos" data-a="up">
-        <li><b>1977–1988</b><strong>Kari Kayramo</strong><span>Xalqarolashtirish, elektronika va telekommunikatsiya</span></li>
-        <li><b>1988–1992</b><strong>Simo Vuorilehto</strong><span>Qiyin yillar va qayta tashkil etish</span></li>
-        <li class="hi"><b>1992–2006</b><strong>Yorma Ollila</strong><span>Mobil aloqaga fokus va jahon yetakchiligi</span></li>
-        <li><b>2006–2010</b><strong>Olli-Pekka Kallasvuo</strong><span>Smartfon inqilobi davri</span></li>
-        <li class="lo"><b>2010–2013</b><strong>Stiven Elop</strong><span>Windows Phone, telefon biznesining sotilishi</span></li>
-        <li><b>2014–2020</b><strong>Rajiv Suri</strong><span>Alcatel-Lucent, tarmoq kompaniyasiga aylanish</span></li>
-        <li><b>2020–2025</b><strong>Pekka Lundmark</strong><span>5G va restrukturizatsiya</span></li>
-        <li class="hi"><b>2025–</b><strong>Jastin Xotard</strong><span>AI infratuzilmasi, Nvidia bilan hamkorlik</span></li>
-      </ol>
+      <h3 class="ceo-title" data-a="up">Bosh direktorlar</h3>
+      <div class="ceo-row" data-a="up">
+        <div class="ceo" data-wiki="Kari_Kairamo"><div class="ph"><span>KK</span></div><b>Kari Kayramo</b><small>1977–1988</small></div>
+        <div class="ceo" data-wiki="Simo_Vuorilehto"><div class="ph"><span>SV</span></div><b>Simo Vuorilehto</b><small>1988–1992</small></div>
+        <div class="ceo hl up" data-wiki="Jorma_Ollila"><div class="ph"><span>YO</span></div><b>Yorma Ollila</b><small>1992–2006</small><em>Yuksalish</em></div>
+        <div class="ceo" data-wiki="Olli-Pekka_Kallasvuo"><div class="ph"><span>OK</span></div><b>Olli-Pekka Kallasvuo</b><small>2006–2010</small></div>
+        <div class="ceo hl down" data-wiki="Stephen_Elop"><div class="ph"><span>SE</span></div><b>Stiven Elop</b><small>2010–2013</small><em>Inqiroz</em></div>
+        <div class="ceo hl re" data-wiki="Rajeev_Suri"><div class="ph"><span>RS</span></div><b>Rajiv Suri</b><small>2014–2020</small><em>Qayta tug‘ilish</em></div>
+        <div class="ceo" data-wiki="Pekka_Lundmark"><div class="ph"><span>PL</span></div><b>Pekka Lundmark</b><small>2020–2025</small></div>
+        <div class="ceo" data-wiki="Justin_Hotard"><div class="ph"><span>JX</span></div><b>Jastin Xotard</b><small>2025–</small></div>
+      </div>
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 7. Timeline -->
   <section class="slide timeline" id="s-timeline" data-theme="light" data-live="react">
     <div class="stage">
       <div class="tl-top">
         <div class="head">
           <p class="eyebrow" data-a="up">Vaqt chizig‘i</p>
           <h2 data-a="title">160 yil bir qarashda</h2>
-          <div class="tl-help"><div class="tl-bar" id="tlBar"><i></i></div><span>Strelkalar, g‘ildirak yoki sudrash bilan yilma-yil suring</span></div>
+          <div class="tl-help"><div class="tl-bar" id="tlBar"><i></i></div><span>Strelkalar bilan yilma-yil o‘ting</span></div>
         </div>
         <div class="era-box" aria-hidden="true">
           <canvas id="era3d"></canvas>
+          <figure class="era-photo" id="eraPhoto"><img alt="" id="eraImg"><figcaption id="eraCredit"></figcaption></figure>
           <div class="era-cap" id="eraCap"></div>
         </div>
       </div>
@@ -131,104 +145,98 @@
     </div>
   </section>
 
-  <!-- 6 -->
+  <!-- 8. Rise -->
   <section class="slide" id="s-rise" data-theme="light" data-live="react">
     <div class="stage">
       <p class="eyebrow" data-a="up">1992–2007: yuksalish</p>
       <h2 data-a="title">Hammasini mobil aloqaga tikish</h2>
-      <p class="lede" data-a="up">1992-yilda bosh direktor bo‘lgan Yorma Ollila televizor, rezina etik va kabel ishlab chiqarishni sotib yubordi va kompaniyani faqat mobil aloqaga yo‘naltirdi. 1998-yilda Nokia Motorolani ortda qoldirib, dunyoning eng yirik telefon ishlab chiqaruvchisiga aylandi.</p>
-      <div class="factors">
-        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20v-4M9 20v-8M14 20V8M19 20V4"/></svg></div><h3>GSM standarti</h3><p>Yangi raqamli aloqa standartini birinchilardan bo‘lib qo‘llab-quvvatladi.</p></div>
-        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg></div><h3>Dizayn</h3><p>Oddiy menyu, mustahkam korpus, uzoq ishlaydigan batareya.</p></div>
-        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg></div><h3>Keng qator</h3><p>Arzon telefondan biznes modelgacha har bir segment uchun mahsulot.</p></div>
-        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><h3>Ta’minot zanjiri</h3><p>Katta ishlab chiqarish hajmi tannarxni pasaytirdi.</p></div>
-        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Yangi bozorlar</h3><p>Osiyo, Afrika va MDHda, jumladan O‘zbekistonda eng ommabop brend.</p></div>
+      <p class="lede" data-a="up">Yorma Ollila boshqa bizneslarni sotib, faqat telefonga e’tibor qaratdi. 1998-yilda Nokia dunyoda 1-o‘ringa chiqdi.</p>
+      <div class="factors four">
+        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20v-4M9 20v-8M14 20V8M19 20V4"/></svg></div><h3>GSM standarti</h3><p>Yangi raqamli aloqada birinchilardan</p></div>
+        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg></div><h3>Oddiy dizayn</h3><p>Qulay menyu, chidamli korpus</p></div>
+        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg></div><h3>Har kimga telefon</h3><p>Arzondan premiumgacha</p></div>
+        <div class="factor" data-a="up"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h21M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Butun dunyo</h3><p>O‘zbekistonda ham eng ommabop</p></div>
       </div>
     </div>
   </section>
 
-  <!-- marketing -->
+  <!-- 9. Marketing -->
   <section class="slide" id="s-marketing" data-theme="light" data-live="react">
     <div class="stage">
       <p class="eyebrow" data-a="up">Marketing</p>
       <h2 data-a="title">Nokia qanday sevildi</h2>
-      <p class="lede" data-a="up">Nokia telefonni texnik qurilma sifatida emas, odamlarni bog‘laydigan, o‘yin va o‘zini ifoda etish vositasi sifatida sotdi.</p>
       <div class="mkt">
-        <div class="mcard" data-a="up"><b>1989</b><h3>«Gorba» qo‘ng‘irog‘i</h3><p>Mixail Gorbachyov Helsinkida Nokia telefonidan Moskvaga qo‘ng‘iroq qildi. Finlyandiyada telefon «Gorba» laqabini oldi. Tasodifiy, lekin bebaho reklama.</p></div>
-        <div class="mcard" data-a="up"><b>1992</b><h3>«Connecting People»</h3><p>Ove Strandberg yaratgan shior: texnologiya emas, odamlarni bog‘lash va’dasi. 20 yildan ortiq kompaniya missiyasi bo‘lib qoldi.</p></div>
-        <div class="mcard" data-a="up"><b>1994</b><h3>Nokia tune</h3><p>Tarreganing 1902-yilgi «Gran Vals» asaridan olingan ohang. 2009-yildagi taxminga ko‘ra, dunyoda kuniga 1,8 milliard marta yangragan.</p></div>
-        <div class="mcard" data-a="up"><b>1997</b><h3>Snake o‘yini</h3><p>Telefonga o‘rnatilgan oddiy o‘yin odamlarni qurilmaga bog‘ladi. 3310 modelida Snake II bilan davom etdi.</p></div>
-        <div class="mcard" data-a="up"><b>1999</b><h3>«Matritsa» filmi</h3><p>Filmda bosh qahramon Nokia 8110’dan foydalandi. 2018-yilda bu model qayta chiqarildi.</p></div>
-        <div class="mcard" data-a="up"><b>2000</b><h3>Almashtiriladigan panellar</h3><p>Xpress-on panellar telefonni aksessuarga aylantirdi. 3310 qariyb 126 million dona sotildi.</p></div>
-        <div class="mcard" data-a="up"><b>2003</b><h3>Har bir bozor uchun telefon</h3><p>Nokia 1100: chang o‘tkazmaydigan klaviatura, fonar va arzon narx. 250 milliondan ortiq sotildi.</p></div>
-        <div class="mcard key" data-a="up"><h3>Saboq</h3><p>Kuchli brend his-tuyg‘u, oddiylik va har bir mijozga mos mahsulotdan quriladi.</p></div>
+        <div class="mcard" data-a="up"><span class="yr">1989</span><h3>«Gorba» qo‘ng‘irog‘i</h3><p>Gorbachyov Nokia telefonidan qo‘ng‘iroq qildi: bepul global reklama</p></div>
+        <div class="mcard" data-a="up"><span class="yr">1992</span><h3>«Connecting People»</h3><p>Texnologiya emas, odamlarni bog‘lash va’dasi</p></div>
+        <div class="mcard" data-a="up"><span class="yr">1994</span><h3>Nokia tune</h3><p>Tovush orqali brend: kuniga 1,8 mlrd marta yangragan</p></div>
+        <div class="mcard" data-a="up"><span class="yr">1997</span><h3>Snake o‘yini</h3><p>Telefon ichidagi o‘yin foydalanuvchini bog‘ladi</p></div>
+        <div class="mcard" data-a="up"><span class="yr">2000</span><h3>Almashtiriladigan panellar</h3><p>Telefon o‘zini ifoda etish vositasiga aylandi</p></div>
+        <div class="mcard" data-a="up"><span class="yr">2003</span><h3>Har bir bozor uchun</h3><p>Nokia 1100: arzon, chidamli, 250 mln+ dona</p></div>
       </div>
     </div>
   </section>
 
-  <!-- 7 -->
+  <!-- 10. Peak -->
   <section class="slide peak" id="s-peak" data-theme="light" data-live="react">
     <div class="stage">
       <div class="mega acc" data-a="up" data-count="40" data-suffix="%">40%</div>
       <div>
         <p class="eyebrow" data-a="up">2007-yil, cho‘qqi</p>
-        <h2 data-a="title">Dunyodagi har 5 telefondan 2 tasi Nokia edi</h2>
+        <h2 data-a="title">Har 5 telefondan 2 tasi Nokia edi</h2>
         <div class="pictogram" id="pictogram" data-a="up" aria-hidden="true"></div>
-        <p class="lede" data-a="up">O‘sha paytdagi smartfonlar bozorida esa Nokia’ning ulushi 50 foizdan ham yuqori bo‘lgan.</p>
       </div>
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 11. 2007 -->
   <section class="slide" id="s-2007" data-theme="dark" data-live="react">
     <div class="stage">
       <div class="mega glitch" data-text="2007" data-a="scale">2007</div>
-      <h2 data-a="title">9-yanvar. Apple iPhone’ni taqdim etdi</h2>
-      <p class="lede" data-a="up">Sensorli ekran, ilovalar do‘koni va to‘liq internet. Telefon endi qo‘ng‘iroq qiladigan qurilma emas, cho‘ntakdagi kompyuterga aylandi. Nokia rahbariyati esa iPhone’ni qimmat va tor auditoriya uchun mo‘ljallangan mahsulot deb baholadi.</p>
+      <h2 data-a="title">Apple iPhone’ni taqdim etdi</h2>
+      <p class="lede" data-a="up">Sensorli ekran va ilovalar do‘koni. Nokia buni jiddiy qabul qilmadi.</p>
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 12. Fall -->
   <section class="slide fall" id="s-fall" data-theme="dark" data-live="react">
     <div class="stage">
       <div>
         <p class="eyebrow" data-a="up">2007–2013: inqiroz</p>
         <h2 data-a="title">Olti yilda bozor qo‘ldan ketdi</h2>
-        <p class="lede" data-a="up">Telefonlar bozoridagi ulush deyarli uch barobar, smartfonlar bozoridagi ulush esa o‘n besh barobardan ko‘proq qisqardi.</p>
       </div>
       <div class="bars" data-a="up">
         <div class="brow"><div class="lbl"><span>Barcha telefonlar, 2007</span><b>≈ 40%</b></div><div class="track-bar"><i data-w="40"></i></div></div>
         <div class="brow"><div class="lbl"><span>Barcha telefonlar, 2013</span><b>≈ 15%</b></div><div class="track-bar"><i class="now" data-w="15"></i></div></div>
-        <div class="brow"><div class="lbl"><span>Smartfonlar, 2007</span><b>50% dan ortiq</b></div><div class="track-bar"><i data-w="52"></i></div></div>
+        <div class="brow"><div class="lbl"><span>Smartfonlar, 2007</span><b>50%+</b></div><div class="track-bar"><i data-w="52"></i></div></div>
         <div class="brow"><div class="lbl"><span>Smartfonlar, 2013</span><b>≈ 3%</b></div><div class="track-bar"><i class="now" data-w="3"></i></div></div>
       </div>
     </div>
   </section>
 
-  <!-- 10 -->
+  <!-- 13. Reasons -->
   <section class="slide" id="s-reasons" data-theme="dark" data-live="react">
     <div class="stage">
-      <h2 data-a="title">Nima uchun bunday bo‘ldi?</h2>
-      <ol class="reasons">
-        <li data-a="up"><h3>Eskirgan tizim</h3><p>Symbian sensorli ekran va ilovalar uchun yaratilmagan edi.</p></li>
-        <li data-a="up"><h3>Faqat «temir»</h3><p>Nokia telefonni qurilma deb bildi, raqobat esa ilovalar ekotizimiga ko‘chgan edi.</p></li>
-        <li data-a="up"><h3>Muvaffaqiyat tuzog‘i</h3><p>Bozor yetakchisi yangi raqibni kam baholadi.</p></li>
-        <li data-a="up"><h3>Tashkiliy qo‘rquv</h3><p>INSEAD tadqiqotiga ko‘ra, menejerlar rahbariyatga yomon xabarni yetkazishdan qo‘rqqan.</p></li>
-        <li data-a="up"><h3>Noto‘g‘ri tanlov</h3><p>Android o‘rniga ilovalari kam Windows Phone tanlandi.</p></li>
+      <h2 data-a="title">Nima uchun?</h2>
+      <ol class="reasons-list">
+        <li data-a="up"><b>Eskirgan tizim</b><span>Symbian sensorli ekranga mos emas edi</span></li>
+        <li data-a="up"><b>Faqat «temir»</b><span>Raqobat ilovalarga ko‘chdi, Nokia sezmadi</span></li>
+        <li data-a="up"><b>Muvaffaqiyat tuzog‘i</b><span>Yetakchi yangi raqibni kam baholadi</span></li>
+        <li data-a="up"><b>Qo‘rquv madaniyati</b><span>Yomon xabar rahbariyatga yetib bormadi</span></li>
+        <li data-a="up"><b>Noto‘g‘ri tanlov</b><span>Android o‘rniga Windows Phone</span></li>
       </ol>
     </div>
   </section>
 
-  <!-- 11 -->
+  <!-- 14. Burning platform -->
   <section class="slide platform" id="s-platform" data-theme="dark" data-live="react">
     <canvas id="embers" aria-hidden="true"></canvas>
     <div class="stage">
       <blockquote class="big" data-a="title">«Biz ham yonayotgan platformada turibmiz»</blockquote>
-      <p class="cite" data-a="up"><b>Stiven Elop</b>, Nokia bosh direktori. 2011-yil fevralda xodimlarga yozgan maktubidan. Shu maktubdan keyin Nokia Microsoft bilan hamkorlikni tanladi.</p>
+      <p class="cite" data-a="up"><b>Stiven Elop</b>, Nokia bosh direktori, 2011-yil</p>
     </div>
   </section>
 
-  <!-- 12 -->
+  <!-- 15. What if -->
   <section class="slide" id="s-whatif" data-theme="dark" data-live="poll:q1" data-poll="q1">
     <div class="stage">
       <p class="eyebrow" data-a="up">Ovoz bering, 2011-yil</p>
@@ -236,94 +244,87 @@
       <div class="whatif-grid">
         <div>
           <div class="opts" data-poll-box="q1">
-            <button class="opt" type="button" data-opt="android" aria-pressed="false" data-a="up"><div class="top"><span class="name">Android ga o‘tish</span><span class="cnt">0</span></div><small>Google tizimi, tayyor ilovalar do‘koni</small><div class="track-bar"><i></i></div></button>
-            <button class="opt" type="button" data-opt="wp" aria-pressed="false" data-a="up"><div class="top"><span class="name">Windows Phone</span><span class="cnt">0</span></div><small>Microsoft bilan strategik ittifoq</small><div class="track-bar"><i></i></div></button>
-            <button class="opt" type="button" data-opt="own" aria-pressed="false" data-a="up"><div class="top"><span class="name">O‘z tizimi (MeeGo)</span><span class="cnt">0</span></div><small>Ilovalar ekotizimini noldan qurish</small><div class="track-bar"><i></i></div></button>
+            <button class="opt" type="button" data-opt="android" aria-pressed="false" data-a="up"><div class="top"><span class="name">Android ga o‘tish</span><span class="cnt">0</span></div><div class="track-bar"><i></i></div></button>
+            <button class="opt" type="button" data-opt="wp" aria-pressed="false" data-a="up"><div class="top"><span class="name">Windows Phone</span><span class="cnt">0</span></div><div class="track-bar"><i></i></div></button>
+            <button class="opt" type="button" data-opt="own" aria-pressed="false" data-a="up"><div class="top"><span class="name">O‘z tizimi (MeeGo)</span><span class="cnt">0</span></div><div class="track-bar"><i></i></div></button>
           </div>
-          <p class="poll-total" data-a="up"><span data-poll-total="q1">0</span> ta ovoz. Variantni bosing va uning oqibatini ko‘ring.</p>
+          <p class="poll-total" data-a="up"><span data-poll-total="q1">0</span> ta ovoz. Variantni bosing va oqibatini ko‘ring.</p>
         </div>
-        <div class="scenario" id="scenario" aria-live="polite" data-a="up"><p class="empty">Avval guruhdoshlar ovoz bersin, keyin variantlardan birini bosing.</p></div>
+        <div class="scenario" id="scenario" aria-live="polite" data-a="up"><p class="empty">Ovozlardan keyin variantlardan birini bosing.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- 13 -->
+  <!-- 16. Sold -->
   <section class="slide sold" id="s-sold" data-theme="dark" data-live="react">
     <div class="stage">
       <div class="mega acc" data-a="up" data-count="5.44" data-dec="2" data-suffix=" mlrd €">5,44 mlrd €</div>
       <h2 data-a="title">2013: telefon biznesi Microsoftga sotildi</h2>
-      <p class="lede" data-a="up">2014-yilda bitim yakunlandi va qariyb 32 ming xodim Microsoftga o‘tdi. Jahon bozorining 40 foizini egallagan kompaniya telefon bozoridan chiqib ketdi.</p>
+      <p class="lede" data-a="up">Qariyb 32 ming xodim Microsoftga o‘tdi.</p>
     </div>
   </section>
 
-  <!-- 14 -->
+  <!-- 17. Rebirth -->
   <section class="slide" id="s-rebirth" data-theme="blue" data-live="react">
     <div class="stage">
       <p class="eyebrow" data-a="up">2013–2026: qayta tug‘ilish</p>
       <h2 data-a="title">Ikkinchi hayot: tarmoq texnologiyalari</h2>
-      <ol class="steps">
-        <li data-a="up"><b>2013</b><strong>Nokia Siemens Networks</strong><span>Siemensning qo‘shma korxonadagi ulushi sotib olindi.</span></li>
-        <li data-a="up"><b>2016</b><strong>Alcatel-Lucent</strong><span>Bell Labs bilan birga sotib olindi. Nokia tarmoq uskunalari bo‘yicha dunyodagi eng yiriklardan biriga aylandi.</span></li>
-        <li data-a="up"><b>2016</b><strong>Brend litsenziyasi</strong><span>Nokia telefonlarini endi HMD kompaniyasi ishlab chiqaradi.</span></li>
-        <li data-a="up"><b>2025</b><strong>Infinera, 2,3 mlrd $</strong><span>Optik tarmoqlar orqali AI ma’lumot markazlari bozoriga kirish.</span></li>
-        <li data-a="up"><b>2025</b><strong>Nvidia, 1 mlrd $</strong><span>Nvidia aksiyalarning 2,9% ini oldi. Maqsad: AI-RAN, 5G va 6G.</span></li>
+      <ol class="steps four">
+        <li data-a="up"><b>2013</b><strong>Nokia Siemens Networks</strong><span>Tarmoq biznesini to‘liq oldi</span></li>
+        <li data-a="up"><b>2016</b><strong>Alcatel-Lucent</strong><span>Bell Labs bilan birga sotib olindi</span></li>
+        <li data-a="up"><b>2025</b><strong>Infinera</strong><span>Optik tarmoqlar, 2,3 mlrd $</span></li>
+        <li data-a="up"><b>2025</b><strong>Nvidia</strong><span>1 mlrd $ investitsiya, AI tarmoqlari</span></li>
       </ol>
     </div>
   </section>
 
-  <!-- 15 -->
+  <!-- 18. Numbers -->
   <section class="slide numbers" id="s-numbers" data-theme="blue" data-live="react">
     <div class="stage">
       <div>
         <div class="mega" data-a="up" data-count="123" data-prefix="+" data-suffix="%">+123%</div>
         <h2 data-a="title" style="font-size:clamp(30px,3.4vw,48px)">AI va bulut mijozlariga sotuv o‘sishi</h2>
-        <p class="lede" data-a="up">2026-yilning III choragi. Bu yo‘nalish allaqachon guruh savdosining 12 foizini tashkil etadi.</p>
+        <p class="lede" data-a="up">2026-yil, III chorak</p>
       </div>
       <div data-a="up">
-        <h3>Moliyaviy ko‘rsatkichlar, mlrd yevro</h3>
+        <h3>Savdo va foyda, mlrd yevro</h3>
         <div class="vbars" style="margin-top:18px">
           <div class="vbar"><em>19,22</em><i class="dim" data-h="96"></i><small>Savdo 2024</small></div>
           <div class="vbar"><em>19,89</em><i data-h="100"></i><small>Savdo 2025</small></div>
           <div class="vbar"><em>2,58</em><i class="dim" data-h="13"></i><small>Foyda 2024</small></div>
           <div class="vbar"><em>2,02</em><i data-h="10"></i><small>Foyda 2025</small></div>
         </div>
-        <div class="kpis">
-          <div class="kpi"><b>+9%</b><span>savdo o‘sishi, 2026 III chorak</span></div>
-          <div class="kpi"><b>11,7%</b><span>operatsion rentabellik</span></div>
-          <div class="kpi"><b>1,5 mlrd €</b><span>AI va bulut buyurtmalari</span></div>
-          <div class="kpi"><b>2,9%</b><span>Nvidia ulushi</span></div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- 16 -->
+  <!-- 19. SWOT -->
   <section class="slide" id="s-swot" data-theme="light" data-live="react">
     <div class="stage">
       <h2 data-a="title">SWOT tahlil</h2>
       <div class="swot">
-        <div class="g" data-a="up"><h3><b>S</b>Kuchli tomonlar</h3><ul><li>Tarmoq texnologiyalari bo‘yicha boy tajriba</li><li>Katta patent portfeli va litsenziya daromadi</li><li>Bell Labs ilmiy salohiyati</li><li>Nvidia bilan strategik hamkorlik</li></ul></div>
-        <div class="r" data-a="up"><h3><b>W</b>Zaif tomonlar</h3><ul><li>Mobil tarmoqlar segmentining sekin o‘sishi</li><li>2025-yilda rentabellik 13,4% dan 10,2% ga tushdi</li><li>Restrukturizatsiya xarajatlari, manfiy pul oqimi</li></ul></div>
-        <div class="g" data-a="up"><h3><b>O</b>Imkoniyatlar</h3><ul><li>AI ma’lumot markazlari qurilishining o‘sishi</li><li>6G va AI-RAN texnologiyalari</li><li>Xitoy uskunalariga qo‘yilayotgan cheklovlar</li></ul></div>
-        <div class="r" data-a="up"><h3><b>T</b>Tahdidlar</h3><ul><li>Huawei va Ericsson bilan narx raqobati</li><li>Operatorlarning investitsiyalarni qisqartirishi</li><li>AI bozoridagi «pufak» xavfi</li></ul></div>
+        <div class="g" data-a="up"><h3><b>S</b>Kuchli</h3><ul><li>Tarmoq texnologiyalari tajribasi</li><li>Katta patent portfeli</li></ul></div>
+        <div class="r" data-a="up"><h3><b>W</b>Zaif</h3><ul><li>Mobil tarmoqlar sekin o‘smoqda</li><li>Foyda 2025-yilda kamaydi</li></ul></div>
+        <div class="g" data-a="up"><h3><b>O</b>Imkoniyat</h3><ul><li>AI ma’lumot markazlari</li><li>6G texnologiyalari</li></ul></div>
+        <div class="r" data-a="up"><h3><b>T</b>Tahdid</h3><ul><li>Huawei va Ericsson raqobati</li><li>AI bozoridagi «pufak» xavfi</li></ul></div>
       </div>
     </div>
   </section>
 
-  <!-- 17 -->
+  <!-- 20. Problems / solutions -->
   <section class="slide" id="s-ps" data-theme="light" data-live="react">
     <div class="stage">
       <h2 data-a="title">Muammolar va yechimlar</h2>
-      <p class="lede" data-a="up">Kartani bosing: oldida muammo, orqasida taklif etilgan yechim.</p>
-      <div class="ps" id="psGrid"></div>
+      <p class="lede" data-a="up">Kartani bosing: oldida muammo, orqasida yechim.</p>
+      <div class="ps three" id="psGrid"></div>
     </div>
   </section>
 
-  <!-- 18 -->
+  <!-- 21. Second poll -->
   <section class="slide" id="s-poll2" data-theme="light" data-live="poll:q2" data-poll="q2">
     <div class="stage">
       <p class="eyebrow" data-a="up">Ovoz bering</p>
-      <h2 data-a="title">Sizningcha, inqirozning asosiy sababi nima?</h2>
+      <h2 data-a="title">Inqirozning asosiy sababi nima?</h2>
       <div class="poll-big" data-poll-box="q2">
         <div class="opt" data-opt="tech" data-a="up"><div class="top"><span class="name">Texnologik kechikish</span><span class="cnt">0</span></div><div class="track-bar"><i></i></div></div>
         <div class="opt" data-opt="mgmt" data-a="up"><div class="top"><span class="name">Boshqaruv va madaniyat</span><span class="cnt">0</span></div><div class="track-bar"><i></i></div></div>
@@ -333,41 +334,19 @@
     </div>
   </section>
 
-  <!-- 19 -->
+  <!-- 22. Lessons -->
   <section class="slide" id="s-lessons" data-theme="light" data-live="react">
     <div class="stage">
-      <h2 data-a="title">Nokia tajribasidan saboqlar</h2>
-      <div class="lessons">
-        <div data-a="up"><h3>Bugungi muvaffaqiyat ertangi kafolat emas</h3><p>Bozor yetakchisi bo‘lish yangi texnologiyani kam baholashga olib kelishi mumkin.</p></div>
-        <div data-a="up"><h3>Yomon xabar tez yetib borsin</h3><p>Xodimlar rahbariyatga muammoni qo‘rqmasdan aytadigan madaniyat zarur.</p></div>
-        <div data-a="up"><h3>Mahsulot emas, ekotizim yutadi</h3><p>Smartfon davrida ilovalar va dasturchilar qurilmadan muhimroq bo‘lib chiqdi.</p></div>
-        <div data-a="up"><h3>Inqiroz oxiri emas</h3><p>Aniq fokus va jasoratli qarorlar kompaniyani yangi sohada qayta tiklashi mumkin.</p></div>
-      </div>
-      <div class="qs" data-a="up">
-        <h3>Mulohaza uchun savollar</h3>
-        <ol>
-          <li>Nokia inqirozining asosiy sababi texnologiyami yoki boshqaruv va madaniyat?</li>
-          <li>Bozor yetakchilari nima uchun buzuvchi innovatsiyalarni kam baholaydi?</li>
-          <li>Nokia tajribasidan O‘zbekiston kompaniyalari qanday saboq olishi mumkin?</li>
-        </ol>
+      <h2 data-a="title">Uchta saboq</h2>
+      <div class="lessons three">
+        <div data-a="up"><b>1</b><h3>Bugungi yetakchilik ertangi kafolat emas</h3></div>
+        <div data-a="up"><b>2</b><h3>Mahsulot emas, ekotizim yutadi</h3></div>
+        <div data-a="up"><b>3</b><h3>Inqiroz oxiri emas, yangi boshlanish bo‘lishi mumkin</h3></div>
       </div>
     </div>
   </section>
 
-  <!-- 20 -->
-  <section class="slide" id="s-cloud2" data-theme="light" data-live="cloud:w2" data-cloud="w2">
-    <div class="stage">
-      <p class="eyebrow" data-a="up">So‘z buluti</p>
-      <h2 data-a="title">Bir so‘z bilan: Nokia’dan asosiy saboq nima?</h2>
-      <div class="cloud-wrap" data-a="scale">
-        <div class="cloud" data-cloud-box="w2"></div>
-        <div class="cloud-empty" data-cloud-empty="w2"><div><b>Birinchi so‘zni kutyapmiz</b>Telefoningizdan bitta yoki ikki so‘z yuboring</div></div>
-      </div>
-      <div class="cloud-meta"><span><span data-cloud-count="w2">0</span> ta javob</span><span><span data-online>0</span> kishi ulangan</span></div>
-    </div>
-  </section>
-
-  <!-- 21 -->
+  <!-- 23. Finale -->
   <section class="slide finale" id="s-finale" data-theme="light" data-live="end" data-totals="1">
     <div class="stage">
       <div>
@@ -406,6 +385,8 @@
         <li><a href="https://www.capitalbrief.com/briefing/nvidia-takes-29-stake-in-nokia-with-usd1b-investment-to-develop-ai-powered-networking-0a6dfa21-47bc-4c1d-a8ee-69657a362871/" target="_blank" rel="noopener">Capital Brief: Nvidia Nokia’ga 1 mlrd $ kiritdi</a></li>
         <li><a href="https://www.nbcnews.com/businessmain/microsoft-buy-nokias-handset-business-7-2-billion-8c11063106" target="_blank" rel="noopener">NBC News: Microsoft Nokia telefon biznesini sotib oldi</a></li>
         <li><a href="https://www.pressreader.com/uae/khaleej-times/20131111/282140699143882" target="_blank" rel="noopener">Khaleej Times: Nokia – a swift fall from grace</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/History_of_Nokia" target="_blank" rel="noopener">Wikipedia: History of Nokia</a></li>
+        <li>Telefon va shaxslar suratlari: Wikipedia / Wikimedia Commons, mualliflarining ochiq litsenziyalari asosida (har bir surat ostida havola bor)</li>
       </ol>
     </div>
   </div>

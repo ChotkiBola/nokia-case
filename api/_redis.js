@@ -3,12 +3,13 @@
 // (or UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN). Both are supported.
 
 export const POLLS = {
+  q0: ["iphone", "samsung", "other"],
   q1: ["android", "wp", "own"],
   q2: ["tech", "mgmt", "comp"],
 };
 export const CLOUDS = ["w1", "w2"];
 export const REACTIONS = 6; // indexes 0..5, mapped to emoji on the client
-export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q1", "poll:q2", "end"];
+export const STATES = ["welcome", "react", "cloud:w1", "cloud:w2", "poll:q0", "poll:q1", "poll:q2", "end"];
 
 function creds() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
