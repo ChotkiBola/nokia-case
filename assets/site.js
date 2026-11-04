@@ -687,30 +687,49 @@
       if (!el.dataset.split) { el.dataset.split = 1; el.innerHTML = el.textContent.trim().split(/\s+/).map(w => `<span class="w"><span>${w}</span></span>`).join(" "); }
       return $$(".w > span", el);
     }
-    // optional video: if /assets/intro.mp4 exists it plays instead of the canvas animation
+    // the intro video is used whenever the browser can play it; the canvas animation is only a fallback.
+    // Phones (iOS especially) do not preload video, so we never wait for "loadeddata" before using it.
     const vid = $("#introVideo");
-    let hasVideo = false;
-    if (vid) {
-      vid.addEventListener("loadeddata", () => {
-        hasVideo = true; document.body.classList.add("has-intro-video");
-        const sec = $("#s-connect"); sec.dataset.theme = "light";
-        if (document.body.dataset.slide === "s-connect") document.body.dataset.theme = "light";
-      }, { once: true });
+    let hasVideo = !!(vid && (vid.canPlayType("video/mp4") || vid.canPlayType("video/webm")));
+    function useVideoLook() {
+      document.body.classList.add("has-intro-video");
+      $("#s-connect").dataset.theme = "light";
+      if (document.body.dataset.slide === "s-connect") document.body.dataset.theme = "light";
+    }
+    function showTitle() {
+      if (G) {
+        G.set([title, sub], { visibility: "visible" });
+        G.fromTo(words(title), { yPercent: 115 }, { yPercent: 0, stagger: .08, duration: 1, ease: "expo.out", delay: .4 });
+        G.fromTo(sub, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .8, delay: 1.2 });
+      } else title.style.visibility = sub.style.visibility = "visible";
+    }
+    if (hasVideo) {
+      useVideoLook();
+      // both sources failed (file missing or codec unsupported): go back to the canvas animation
+      const last = vid.querySelector("source:last-of-type");
+      if (last) last.addEventListener("error", () => {
+        hasVideo = false; document.body.classList.remove("has-intro-video");
+        $("#s-connect").dataset.theme = "dark";
+        if (on) { on = false; Connect.toggle(true); }
+      });
       vid.addEventListener("ended", () => {
         if (!on) return;
-        if (G) {
-          G.to(vid, { autoAlpha: 0, duration: .8 });
-          G.set([title, sub], { visibility: "visible" });
-          G.fromTo(words(title), { yPercent: 115 }, { yPercent: 0, stagger: .08, duration: 1, ease: "expo.out", delay: .4 });
-          G.fromTo(sub, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .8, delay: 1.2 });
-        } else { vid.style.opacity = 0; title.style.visibility = sub.style.visibility = "visible"; }
+        if (G) G.to(vid, { autoAlpha: 0, duration: .8 }); else vid.style.opacity = 0;
+        showTitle();
       });
+      // if the browser refused to start the video, a tap on it plays it
+      vid.addEventListener("click", () => { if (vid.paused) { vid.muted = false; vid.play().catch(() => {}); } });
     }
     function playVideo() {
       if (G) G.set([title, sub], { visibility: "hidden" }); else title.style.visibility = sub.style.visibility = "hidden";
-      if (G) G.set(vid, { autoAlpha: 1 }); else vid.style.opacity = 1;
-      vid.currentTime = 0; vid.muted = false;
-      vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+      if (G) G.set(vid, { autoAlpha: 1 }); else { vid.style.opacity = 1; vid.style.visibility = "visible"; }
+      try { vid.currentTime = 0; } catch (e) {}
+      vid.muted = false;
+      vid.play().catch(() => {
+        // sound not allowed without a tap: play muted; if even that is blocked, show the last frame and the title
+        vid.muted = true;
+        vid.play().catch(() => { vid.style.pointerEvents = "auto"; showTitle(); });
+      });
     }
     return {
       toggle(v) {
