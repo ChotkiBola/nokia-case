@@ -37,7 +37,7 @@
     ["1865", "Fredrik Idestam Tampere yaqinida yog‘och massasi (qog‘oz xomashyosi) fabrikasini ochdi", "rise", "", "paper"],
     ["1871", "Leo Mechelin bilan birga Nokia Ab aksiyadorlik jamiyati tuzildi", "rise", "", "paper"],
     ["1967", "Qog‘oz, rezina va kabel zavodlari birlashib, Nokia korporatsiyasi tuzildi", "rise", "", "cable"],
-    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri chiqdi. 1989-yilda Gorbachyov undan Helsinkidan Moskvaga qo‘ng‘iroq qildi", "rise", "Mobira Cityman", "brick"],
+    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri chiqdi. 1989-yilda Gorbachyov Nokia telefonidan Helsinkidan Moskvaga qo‘ng‘iroq qildi", "rise", "Mobira Cityman", "brick"],
     ["1992", "Yorma Ollila bosh direktor bo‘ldi. Dunyodagi birinchi tijoriy GSM telefon chiqdi", "rise", "Nokia 1011", "early"],
     ["1994", "Telefonda ilk bor mashhur «Nokia tune» qo‘ng‘iroq ohangi yangradi", "rise", "Nokia 2110", "early"],
     ["1997", "Telefonga Snake o‘yini o‘rnatildi va millionlab odamlarning sevimli o‘yiniga aylandi", "rise", "Nokia 6110", "classic"],
