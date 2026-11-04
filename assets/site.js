@@ -855,6 +855,32 @@
     };
   })();
 
+  /* reset all live data: first click arms, second click (within 4 s) clears */
+  (() => {
+    const b = $("#resetBtn");
+    if (!b) return;
+    let armed = 0;
+    b.addEventListener("click", async e => {
+      e.currentTarget.blur();
+      if (!armed) {
+        b.classList.add("armed"); b.textContent = "Rostdan o‘chirilsinmi? Yana bosing";
+        armed = setTimeout(() => { armed = 0; b.classList.remove("armed"); b.textContent = "Tozalash"; }, 4000);
+        return;
+      }
+      clearTimeout(armed); armed = 0;
+      b.textContent = "O‘chirilmoqda…";
+      try {
+        const r = await fetch("/api/host", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ a: "reset", key: hostKey }) });
+        if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || r.status);
+        b.classList.remove("armed"); b.classList.add("done"); b.textContent = "Tozalandi ✓";
+        setTimeout(() => location.reload(), 900);
+      } catch (err) {
+        b.classList.remove("armed"); b.textContent = "Xato: " + (err.message || "qayta urining");
+        setTimeout(() => (b.textContent = "Tozalash"), 3500);
+      }
+    });
+  })();
+
   setupScroll();
   activate(sections[0]);
   window.NokiaLive = Live;
