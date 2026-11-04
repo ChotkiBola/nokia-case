@@ -75,13 +75,13 @@ if (renderer) {
   shadow.position.set(0, -1.85, -.2); scene.add(shadow);
 
   /* LCD content: years cycle */
-  const frames = [["1865", "qog‘oz fabrikasi"], ["1998", "№1 telefon brendi"], ["2007", "40% bozor"], ["2013", "telefonlar sotildi"], ["2026", "AI tarmoqlari"]];
+  const frames = [["?", "qaysi brend?"], ["40%", "bozor ulushi"], ["?", "qaysi brend?"], ["2026", "case study"]];
   let fi = 0, lastSwap = 0;
   function drawLCD(t) {
     sctx.fillStyle = "#c7f0d8"; sctx.fillRect(0, 0, sc.width, sc.height);
     sctx.fillStyle = "#43523d";
     sctx.font = '26px "VT323", monospace'; sctx.textAlign = "left";
-    sctx.fillText("NOKIA CASE", 18, 34);
+    sctx.fillText("CASE STUDY", 18, 34);
     sctx.textAlign = "right"; sctx.fillText("▮▮▮▯", sc.width - 18, 34);
     sctx.fillRect(18, 46, sc.width - 36, 2);
     const [y, txt] = frames[fi];

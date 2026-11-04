@@ -99,6 +99,8 @@ h3 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2
 .hero .stage { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 20px; max-width: 1360px; }
 .hero .mega { font-size: clamp(110px, 15vw, 230px); }
 .hero .mega .ch { display: inline-block; }
+.hero .mega.hero-q { font-size: clamp(76px, 10vw, 160px); }
+.hero .mega.hero-q .ch { white-space: pre; }
 .hero h1.sub { font-size: clamp(28px, 3.2vw, 46px); font-weight: 700; letter-spacing: -.03em; max-width: 16ch; }
 .hero .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
 .hero .meta { margin-top: 30px; font-size: 15px; color: var(--muted); }

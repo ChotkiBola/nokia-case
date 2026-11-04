@@ -264,6 +264,8 @@
       Live.onSlide(sec);
       Embers.toggle(sec.id === "s-platform");
       Connect.toggle(sec.id === "s-connect");
+      const revealAt = sections.findIndex(x => x.id === "s-connect");
+      $("#brandName").textContent = sections.indexOf(sec) >= revealAt ? "Nokia case study" : "Case study";
       if (sec.id === "s-finale" && window.SnakeRahmat) setTimeout(() => window.SnakeRahmat.startMessage(), 700);
     }
     if (replay || !played.has(sec)) { played.add(sec); playIn(sec); }
