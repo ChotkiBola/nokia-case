@@ -4,7 +4,7 @@ TDIU, MBA-15. «Xalqaro tadbirkorlik» fanidan case study.
 
 ## Nimalar bor
 
-- 23 ta keynote uslubidagi slayd: oq (yuksalish), qora (inqiroz), Nokia ko‘k (qayta tug‘ilish).
+- 19 ta keynote uslubidagi slayd: oq (yuksalish), qora (inqiroz), Nokia ko‘k (qayta tug‘ilish).
 - Bosh sahifada aylanib turadigan 3D telefon, kinematografik o‘tishlar, animatsiyali raqamlar va grafiklar.
 - **Auditoriya bilan ishlash:** guruhdoshlar QR-kodni skanerlab `/join` sahifasini ochadi.
   - 👏 🔥 😮 😂 ❤️ 🤯 reaksiyalari katta ekranda uchib chiqadi.

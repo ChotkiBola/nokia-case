@@ -35,10 +35,7 @@
   /* ================= dynamic content ================= */
   // [year, short text, phase, famous model, 3D era, Wikipedia article for the photo]
   const TL = [
-    ["1865", "Qog‘oz fabrikasi ochildi", "rise", "", "paper", ""],
-    ["1871", "Nokia Ab kompaniyasi tuzildi", "rise", "", "paper", ""],
-    ["1967", "Uch zavod birlashib, Nokia korporatsiyasi tuzildi", "rise", "", "cable", ""],
-    ["1987", "Qo‘lda olib yuriladigan ilk telefonlardan biri", "rise", "Mobira Cityman", "brick", "Mobira_Cityman_900"],
+    ["1987", "Ilk ko‘chma telefonlardan. Gorbachyov ham shunday telefondan qo‘ng‘iroq qilgan", "rise", "Mobira Cityman", "brick", "Mobira_Cityman_900"],
     ["1992", "Birinchi tijoriy GSM telefon", "rise", "Nokia 1011", "early", "Nokia_1011"],
     ["1994", "Ilk bor «Nokia tune» yangradi", "rise", "Nokia 2110", "early", "Nokia_2110"],
     ["1997", "Telefonga Snake o‘yini keldi", "rise", "Nokia 6110", "classic", "Nokia_6110"],
@@ -48,9 +45,6 @@
     ["2007", "Cho‘qqi. Shu yili iPhone chiqdi", "crisis", "Nokia N95", "slider", "Nokia_N95"],
     ["2011", "Windows Phone tanlandi", "crisis", "Nokia Lumia 800", "touch", "Nokia_Lumia_800"],
     ["2013", "Telefon biznesi sotildi", "crisis", "Nokia Lumia 1020", "touch", "Nokia_Lumia_1020"],
-    ["2016", "Alcatel-Lucent sotib olindi", "rebirth", "5G uskunalari", "network", ""],
-    ["2025", "Nvidia 1 mlrd $ kiritdi", "rebirth", "Optik tarmoqlar", "network", ""],
-    ["2026", "AI infratuzilmasi", "rebirth", "AI tarmoqlari", "network", ""],
   ];
   const track = $("#track");
   track.innerHTML = TL.map(([y, t, p, m, e], i) => `<div class="tcard" data-p="${p}" data-era="${e}" data-i="${i}"><b>${y}</b>${m ? `<span class="tmodel">${m}</span>` : ""}<p>${t}</p></div>`).join("");
@@ -289,7 +283,6 @@
         invalidateOnRefresh: true,
         onUpdate: self => requestAnimationFrame(() => tlActFromPosition(self.progress)),
       }));
-      G.to("#phone3d", { yPercent: 18, ease: "none", scrollTrigger: { trigger: "#s-hero", start: "top top", end: "bottom top", scrub: true } });
     }
     triggers.push(ScrollTrigger.create({
       start: 0, end: "max", onUpdate: self => ($("#progress").style.width = self.progress * 100 + "%"),
